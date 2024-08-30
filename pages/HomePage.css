@@ -2,7 +2,7 @@
     display: flex;
     justify-content: center; /* 가로축에서 아이템들을 중앙 정렬 */
     align-items: center; /* 세로축에서 아이템들을 중앙 정렬 */
-    font-size: 24px;
+    font-size: 18px;
     font-weight: bold;
     gap: 10px; /* 각 요소 사이의 간격 */
   }
