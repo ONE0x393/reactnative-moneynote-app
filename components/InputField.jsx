@@ -1,15 +1,21 @@
 import React from 'react';
-import './InputField.css';
 
-function InputField({ type, placeholder, value, onChange }) {
+function InputField({ label, type, value, onChange }) {
   return (
-    <input
-      type={type}
-      placeholder={placeholder}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="input-field"
-    />
+    <div style={{ marginBottom: '15px' }}>
+      <label style={{ display: 'block', marginBottom: '5px' }}>{label}</label>
+      <input
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        style={{
+          width: '100%',
+          padding: '8px',
+          borderRadius: '4px',
+          border: '1px solid #ccc'
+        }}
+      />
+    </div>
   );
 }
 
