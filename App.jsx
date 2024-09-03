@@ -10,7 +10,7 @@ function App() {
   return (
     <Router>
       <Header/>
-      <div style={{ marginTop: '37px' }}></div> {/* Header 높이만큼의 마진 추가 */}
+      <div style={{ marginTop: '37px' }}></div> {/* Header 높이만큼의 마진 추가  fsdfa*/}
       <div className='route_page'>
         <Routes>
           <Route path='/' element={<HomePage />} />
