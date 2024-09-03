@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import './MoneyChangeButton.css';
 
 const MoneyChangeButton = ({ date, text, amount, type }) => {
-  const to_link = useNavigate();
+  const navigate = useNavigate();
   const 소비량수정 =()=>{
-    to_link('/');
+    navigate('/accountform');
   }
   return (
     <button className={`custom-button ${type === 0 ? 'expense' : 'income'}`} onClick={소비량수정}>

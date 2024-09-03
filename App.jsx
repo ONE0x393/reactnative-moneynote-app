@@ -5,6 +5,8 @@ import MoneyChange from './pages/MoneyChange.jsx'
 import Header from './components/MenuBarHeader.jsx'
 import AccountList from './pages/AccountList.jsx'
 import PayChart from './pages/PayChart.jsx'
+import LoginPage from './pages/LoginPage.jsx'
+import AccountForm from './pages/AccountForm.jsx';
 
 function App() {
   return (
@@ -17,6 +19,8 @@ function App() {
           <Route path='/moneyChange' element={<MoneyChange />} />
           <Route path='/accountlist' element={<AccountList />} />
           <Route path='/paychart' element={<PayChart />} />
+          <Route path='/login' element={<LoginPage />} />
+          <Route path='/accountform' element={<AccountForm />} />
         </Routes>
       </div>
     </Router>
