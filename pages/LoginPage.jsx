@@ -16,28 +16,43 @@ function LoginPage() {
 
   return (
     <div className="login-container">
-      <h1>로그인 페이지</h1>
-      <form onSubmit={handleLogin}>
+      <h1 className="app-name">앱 이름</h1>
+
+      <form onSubmit={handleLogin} className="login-form">
         <div className="form-group">
-          <label>이메일</label>
+          <label>Email</label>
           <input
             type="email"
             className="form-control"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email(ID) Field"
           />
         </div>
         <div className="form-group">
-          <label>비밀번호</label>
+          <label>Password</label>
           <input
             type="password"
             className="form-control"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password Field"
           />
         </div>
         <button type="submit" className="submit-button">로그인</button>
       </form>
+
+      <div className="links-container">
+        <a href="/forgot-password" className="link">계정을 잊으셨나요?</a>
+        <a href="/create-account" className="link">회원가입</a>
+      </div>
+
+      <div className="social-login-container">
+        <button className="social-button">N</button>
+        <button className="social-button">G</button>
+        <button className="social-button">F</button>
+        <button className="social-button">T</button>
+      </div>
     </div>
   );
 }

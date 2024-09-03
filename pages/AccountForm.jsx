@@ -11,7 +11,7 @@ function AccountForm() {
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState('');
   const [content, setContent] = useState('');
-  const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -54,7 +54,7 @@ function AccountForm() {
         </div>
 
         <div className="form-group">
-          <label className="form-label">금액</label>  {/* 금액 라벨 추가 */}
+          <label className="form-label">금액</label> 
           <input
             type="number"
             value={amount}
@@ -78,7 +78,7 @@ function AccountForm() {
         </div>
 
         <div className="form-group">
-          <label className="form-label">내용</label>  {/* 내용 라벨 추가 */}
+          <label className="form-label">내용</label> 
           <input
             type="text"
             value={content}
