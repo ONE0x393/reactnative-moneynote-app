@@ -15,11 +15,11 @@ function App() {
       <div style={{ marginTop: '37px' }}></div> {/* Header 높이만큼의 마진 추가  fsdfa*/}
       <div className='route_page'>
         <Routes>
-          <Route path='/' element={<HomePage />} />
+          <Route path='/' element={<LoginPage />} />
+          <Route path='/home' element={<HomePage />} />
           <Route path='/moneyChange' element={<MoneyChange />} />
           <Route path='/accountlist' element={<AccountList />} />
           <Route path='/paychart' element={<PayChart />} />
-          <Route path='/login' element={<LoginPage />} />
           <Route path='/accountform' element={<AccountForm />} />
         </Routes>
       </div>
