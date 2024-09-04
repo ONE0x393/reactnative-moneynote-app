@@ -14,6 +14,12 @@ function LoginPage() {
     navigate('/home');
   };
 
+  const handleSignupClick = (e) => {
+    e.preventDefault();
+    // 회원가입 클릭 시 약관 동의 페이지로 이동
+    navigate('/signup');
+  };
+
   return (
     <div className="login-container">
       <h1 className="app-name">앱 이름</h1>
@@ -44,7 +50,7 @@ function LoginPage() {
 
       <div className="links-container">
         <a href="/forgot-password" className="link">계정을 잊으셨나요?</a>
-        <a href="/create-account" className="link">회원가입</a>
+        <a href="/" className="link" onClick={handleSignupClick}>회원가입</a>
       </div>
 
       <div className="social-login-container">

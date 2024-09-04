@@ -8,6 +8,8 @@ import PayChart from './pages/PayChart.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import AccountForm from './pages/AccountForm.jsx';
 import AccountEditPage from './pages/AccountEditPage.jsx';
+import TermsPage from './pages/TermsPage.jsx';
+import SignupPage from './pages/SignupPage.jsx';
 
 function App() {
   return (
@@ -17,6 +19,8 @@ function App() {
       <div className='route_page'>
         <Routes>
           <Route path='/' element={<LoginPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/signup" element={<SignupPage />} />
           <Route path='/home' element={<HomePage />} />
           <Route path='/moneyChange' element={<MoneyChange />} />
           <Route path='/accountlist' element={<AccountList />} />
