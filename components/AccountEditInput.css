@@ -1,0 +1,17 @@
+.input-field {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .input-field label {
+    width: 80px;
+    margin-right: 10px;
+  }
+  
+  .input-field input {
+    flex: 1;
+    padding: 5px;
+    border: 1px solid #000;
+    border-radius: 4px;
+  }

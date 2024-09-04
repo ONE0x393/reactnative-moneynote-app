@@ -1,13 +1,15 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import './AccountButton.css';
 
-const AccountButton = ({ name, text, amount }) => {
-  const to_link = useNavigate();
-  const 계좌수정 =()=>{
-    to_link('/');
-  }
+const AccountButton = ({ id, name, text, amount }) => { // id 추가
+  const navigate = useNavigate();
+
+  const 계좌수정 = () => {
+    // 계좌 ID를 포함한 경로로 이동
+    navigate(`/accountedit/${id}`);
+  };
+
   return (
     <button className="custom-button" onClick={계좌수정}>
       <div className="content">
