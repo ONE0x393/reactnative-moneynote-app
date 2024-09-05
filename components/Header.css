@@ -8,7 +8,7 @@
     background-color: #f8f9fa;
     z-index: 1000;
     display: flex;
-    justify-content: space-between; /* 제목은 왼쪽, 메뉴 버튼은 오른쪽 */
+    justify-content: flex-end;
     align-items: center; /* 수직 가운데 정렬 */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }

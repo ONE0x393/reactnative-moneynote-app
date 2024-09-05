@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './UserInfoForm.css';
 
 function UserInfoForm() {
@@ -9,10 +10,16 @@ function UserInfoForm() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
 
+  const navigate = useNavigate();
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // 회원가입 로직 구현
     console.log({ name, email, password, passwordConfirm, phoneNumber, verificationCode });
+
+    alert('회원가입 되었습니다');
+    
+    navigate('/home');
   };
 
   const handleVerificationClick = () => {
@@ -63,9 +70,6 @@ function UserInfoForm() {
       </div>
 
       <div className="password-rules">
-        <p>비밀번호 규칙 확인</p>
-        <p>비밀번호 규칙 확인</p>
-        <p>비밀번호 규칙 확인</p>
         <p>비밀번호 규칙 확인</p>
       </div>
 
