@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; // useParams와 useNavigate 사용
-import Header from '../components/Header';
-import InputField from '../components/InputField';
-import ToggleButtonGroup from '../components/ToggleButtonGroup';
-import ActionButtons from '../components/ActionButtons';
-import './AccountEditPage.css';
+import { View, Text, Button, StyleSheet } from 'react-native';
+import { useRoute, useNavigation } from '@react-navigation/native'; // useParams 대체
+import InputField from '../native_components/InputField';
+import ToggleButton from '../native_components/ToggleButton';
+import ActionButton from '../native_components/ActionButton';
 
 function AccountEditPage() {
-  const { accountId } = useParams(); // accountId 파라미터 받아오기
-  const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate
+  const route = useRoute(); // useParams 대체
+  const navigation = useNavigation();
+  const { accountId } = route.params || {}; // 파라미터로 accountId 받기
 
   const [type, setType] = useState('수입');
   const [amount, setAmount] = useState('');
@@ -17,10 +17,7 @@ function AccountEditPage() {
 
   const handleSave = () => {
     console.log({ type, amount, account, bank });
-    // 저장 로직 추가
-
-    // 저장 후 이전 페이지로 이동
-    navigate(-1); // 이전 페이지로 이동
+    navigation.goBack(); // 이전 페이지로 이동
   };
 
   const handleEdit = () => {
@@ -29,10 +26,9 @@ function AccountEditPage() {
   };
 
   return (
-    <div className="account-edit-page">
-      <Header />
-      <h2>계좌 수정 페이지 (계좌 ID: {accountId})</h2> {/* 계좌 ID 표시 */}
-      <ToggleButtonGroup 
+    <View style={styles.container}>
+      <Text style={styles.title}>계좌 수정 페이지 (계좌 ID: {accountId})</Text>
+      <ToggleButton
         options={['수입', '지출']}
         selectedOption={type}
         onChange={setType}
@@ -52,12 +48,24 @@ function AccountEditPage() {
         value={bank} 
         onChange={setBank} 
       />
-      <ActionButtons 
+      <ActionButton
         onSave={handleSave} 
         onEdit={handleEdit} 
       />
-    </div>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  title: {
+    fontSize: 20,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+});
 
 export default AccountEditPage;

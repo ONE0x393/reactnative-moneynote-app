@@ -8,6 +8,8 @@ import Main from './native_pages/Main';
 import MomneyChange from './native_pages/MoneyChange';
 import AccountList from './native_pages/AccountList';
 import PayChart from './native_pages/PayChart';
+import Terms from './native_pages/Terms';
+import Signup from './native_pages/Signup';
 
 
 const Stack = createStackNavigator();
@@ -27,6 +29,8 @@ function App() {
             <Stack.Screen name="MoneyChange" component={MomneyChange} />
             <Stack.Screen name="AccountList" component={AccountList} />
             <Stack.Screen name="PayChart" component={PayChart} />
+            <Stack.Screen name="Terms" component={Terms} />
+            <Stack.Screen name="Signup" component={Signup} />
           </Stack.Navigator>
         </View>
         <View style={styles.menubarContainer}>
