@@ -7,7 +7,7 @@ const screenWidth = Dimensions.get('window').width;
 const CircleChart = ({ month, in_output, category, volume }) => {
   // Pie chart data preparation
   const data = category.map((cat, index) => ({
-    name: `${cat} - ${volume[index]}%`,
+    name: `% : ${cat}`,
     population: volume[index],
     color: ['#EB6927', '#2D8CFF', '#8DB600', '#FFCC66', '#990033'][index % 5],
     legendFontColor: '#7F7F7F',
@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
   },
   chart: {
     borderRadius: 16,
+    fontWeight:'bold',
   },
 });
 
