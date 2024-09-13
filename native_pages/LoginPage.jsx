@@ -14,7 +14,7 @@ function LoginPage() {
 
   const handleSignupClick = () => {
     // 회원가입 클릭 시 약관 동의 페이지로 이동
-    navigation.navigate('Signup');
+    navigation.navigate('Terms');
   };
 
   return (

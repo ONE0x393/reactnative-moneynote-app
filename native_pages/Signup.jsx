@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import UserInfoForm from './UserInfo';
+import UserInfoForm from '../native_components/UserInfo';
 
 function SignupPage() {
   return (

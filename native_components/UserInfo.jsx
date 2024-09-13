@@ -16,7 +16,7 @@ function UserInfoForm() {
     // 회원가입 로직 구현
     console.log({ name, email, password, passwordConfirm, phoneNumber, verificationCode });
     Alert.alert('회원가입 되었습니다');
-    navigation.navigate('Home');
+    navigation.navigate('Main');
   };
 
   const handleVerificationClick = () => {

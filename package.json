@@ -28,7 +28,9 @@
     "react-native-web": "~0.19.10",
     "react-router-dom": "^6.26.1",
     "recharts": "^2.12.7",
-    "victory-native": "^37.1.1"
+    "victory-native": "^37.1.1",
+    "@react-native-picker/picker": "2.7.5",
+    "@react-native-community/datetimepicker": "8.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

@@ -10,6 +10,8 @@ import AccountList from './native_pages/AccountList';
 import PayChart from './native_pages/PayChart';
 import Terms from './native_pages/Terms';
 import Signup from './native_pages/Signup';
+import AccountForm from './native_pages/AccountForm';
+import AccountEdit from './native_pages/AccountEdit';
 
 
 const Stack = createStackNavigator();
@@ -31,6 +33,8 @@ function App() {
             <Stack.Screen name="PayChart" component={PayChart} />
             <Stack.Screen name="Terms" component={Terms} />
             <Stack.Screen name="Signup" component={Signup} />
+            <Stack.Screen name="AccountForm" component={AccountForm} />
+            <Stack.Screen name="AccountEdit" component={AccountEdit} />
           </Stack.Navigator>
         </View>
         <View style={styles.menubarContainer}>

@@ -6,7 +6,7 @@ const AccountButton = ({ account, content, amount}) => {
   const navigation = useNavigation(); // useNavigation 훅을 사용하여 네비게이션 객체를 가져옵니다
 
   const handlePress = () => {
-    navigation.navigate('Main'); // 'Main' 페이지로 이동합니다
+    navigation.navigate('AccountEdit'); // 'Main' 페이지로 이동합니다
   };
 
   return (
