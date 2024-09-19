@@ -39,7 +39,7 @@ const CustomCalendar = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    
   },
 });
 

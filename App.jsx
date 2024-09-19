@@ -48,6 +48,7 @@ function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1, // 전체 화면을 차지하도록 설정
+    backgroundColor: '#fff',
   },
   menubarContainer: {
     height: 60, // MenuBar의 고정 높이 설정
