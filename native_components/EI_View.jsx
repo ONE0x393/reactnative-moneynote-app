@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     borderRadius: 20, // 둥근 테두리
   },
   text: {
-    fontSize: 30,
+    fontSize: 15,
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
