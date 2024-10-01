@@ -7,6 +7,53 @@ import PlusButton from '../native_components/PlusButton'; // 경로 추가
 const MoneyChange = () => {
   const route = useRoute();
   const { selectedDate } = route.params || {};
+  const data_list = [
+    {date:"2024-09-01",
+     content:"Sample Content",
+     amount:"$100",
+     type:1
+    },
+    {date:"2024-09-02",
+      content:"Sample Content",
+      amount:"$100",
+      type:1
+     },
+     {date:"2024-09-03",
+      content:"Sample Content",
+      amount:"$100",
+      type:1
+     },
+     {date:"2024-09-04",
+      content:"Sample Content",
+      amount:"$100",
+      type:0
+     },
+     {date:"2024-09-05",
+      content:"Sample Content",
+      amount:"$100",
+      type:0
+     },
+     {date:"2024-09-06",
+      content:"Sample Content",
+      amount:"$100",
+      type:1
+     },
+     {date:"2024-09-07",
+      content:"Sample Content",
+      amount:"$100",
+      type:1
+     },
+     {date:"2024-09-08",
+      content:"Sample Content",
+      amount:"$100",
+      type:0
+     },
+     {date:"2024-09-09",
+      content:"Sample Content",
+      amount:"$100",
+      type:1
+     },
+  ];
 
   return (
     <View style={styles.container}>
@@ -16,14 +63,26 @@ const MoneyChange = () => {
             <Text style={styles.dateText}>{selectedDate}</Text>
           </View>
         )}
+        {data_list.slice() // 원본 배열을 복사합니다.
+        .reverse() // 복사한 배열을 역순으로 바꿉니다.
+        .map((item, index)=>{
+          return(
+            <MoneyChangeButton key = {index}
+           date={item.date}
+           content={item.content}
+           amount={item.amount}
+           type={item.type}
+           />
+          )
+        })}
         <MoneyChangeButton
-          date="2024-09-05"
+          date="2024-08-08"
           content="Sample Content"
           amount="$100"
           type={0} // 0: 빨간색 선, 1: 파란색 선
         />
         <MoneyChangeButton
-          date="2024-09-06"
+          date="2024-08-06"
           content="Another Content"
           amount="$200"
           type={1} // 0: 빨간색 선, 1: 파란색 선

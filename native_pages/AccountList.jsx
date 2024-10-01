@@ -5,19 +5,70 @@ import PlusButton from '../native_components/PlusButton';
 import AccountButton from '../native_components/AccountButton';
 
 const AccountList = () => {
+  const data_list=[
+    {
+      account:"빨강이 좋겠어(롯데카드)",
+      content:"집주인 월세",
+      amount:"300000",
+    },
+    {
+      account:"신한카드",
+      content:"알바 수당",
+      amount:"250000",
+    },
+    {
+      account:"빨강이 좋겠어(롯데카드)",
+      content:"집주인 월세",
+      amount:"300000",
+    },
+    {
+      account:"신한카드",
+      content:"알바 수당",
+      amount:"250000",
+    },
+    {
+      account:"빨강이 좋겠어(롯데카드)",
+      content:"집주인 월세",
+      amount:"300000",
+    },
+    {
+      account:"신한카드",
+      content:"알바 수당",
+      amount:"250000",
+    },
+    {
+      account:"빨강이 좋겠어(롯데카드)",
+      content:"집주인 월세",
+      amount:"300000",
+    },
+    {
+      account:"신한카드",
+      content:"알바 수당",
+      amount:"250000",
+    },
+    {
+      account:"빨강이 좋겠어(롯데카드)",
+      content:"집주인 월세",
+      amount:"300000",
+    },
+    {
+      account:"신한카드",
+      content:"알바 수당",
+      amount:"55550000",
+    },
+  ]
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <AccountButton
-          account="빨강이 좋겠어(롯데카드)"
-          content="집주인 월세"
-          amount="$300"
-        />
-        <AccountButton
-          account="신한카드"
-          content="알바 수당"
-          amount="$200"
-        />
+        {data_list.slice().reverse().map((item, index)=>{
+          return(
+            <AccountButton key={index}
+            account={item.account}
+            content={item.content}
+            amount={item.amount}
+            />
+          )
+        })} 
         {/* 더 많은 MoneyChangeButton을 추가할 수 있습니다 */}
       </ScrollView>
       <PlusButton /> {/* PlusButton 추가 */}
