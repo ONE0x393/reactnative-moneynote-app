@@ -2,6 +2,11 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+
+// import Firebase
+import { firebase } from "./firebase";
+import { collection, getDocs, addDoc } from "firebase/firestore";
+
 import MenuBar from './native_components/MenuBar'; // Header 컴포넌트 경로
 import LoginPage from './native_pages/LoginPage';
 import Main from './native_pages/Main';
