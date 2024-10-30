@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "expo/AppEntry.js",
   "scripts": {
-    "start": "expo start",
+    "start": "npm install && expo start -c",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web"
@@ -20,7 +20,7 @@
     "expo-build-properties": "~0.12.5",
     "expo-dev-client": "~4.0.27",
     "expo-status-bar": "~1.12.1",
-    "firebase": "^10.14.0",
+    "firebase": "^10.14.1",
     "react": "18.2.0",
     "react-datepicker": "^7.3.0",
     "react-dom": "18.2.0",

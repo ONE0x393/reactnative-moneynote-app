@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Custom-FrontEnd",
-    "slug": "Custom-FrontEnd",
+    "name": "CustomPro",
+    "slug": "custom-pro",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -15,6 +15,7 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.inje.custompro",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -25,6 +26,11 @@
     },
     "plugins": [
       "expo-build-properties"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "18f2e90e-7fc8-4bb8-a536-80761955ee17"
+      }
+    }
   }
 }
