@@ -3,10 +3,15 @@ import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker'; // React Native에서 사용하는 Picker
 import { useNavigation } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker'; // DatePicker 대체
+import { useRoute } from '@react-navigation/native';
 
 function AccountForm() {
+  const route = useRoute();
+  const todayDate = new Date().toISOString().split('T')[0];
+  const { chosenDate = todayDate } = route.params || {};
+
   const [type, setType] = useState('income');
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(new Date(chosenDate));
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState('');
   const [content, setContent] = useState('');
@@ -49,7 +54,7 @@ function AccountForm() {
 
       <View style={styles.formGroup}>
         <Text style={styles.label}>날짜</Text>
-        <Button title={date.toLocaleDateString()} onPress={() => setShowDatePicker(true)} />
+        <Button title={new Date(chosenDate).toLocaleDateString()} onPress={() => setShowDatePicker(true)} />
         {showDatePicker && (
           <DateTimePicker
             value={date}

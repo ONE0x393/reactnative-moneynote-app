@@ -3,15 +3,17 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import MoneyChangeButton from '../native_components/MoneyChangeButton'; // 경로 수정
 import PlusButton from '../native_components/PlusButton'; // 경로 추가
+import { format } from 'date-fns';
 
 const MoneyChange = () => {
   const route = useRoute();
-  const { selectedDate } = route.params || {};
-  const data_list = [
+  const todayDate = format(new Date(), 'yyyy-MM-dd');// 오늘 날짜
+  const { selectedDate = todayDate } = route.params || {};
+  const data_list = [ //지출, 수익 내역
     {date:"2024-09-01",
-     content:"Sample Content",
+     content:"Sample Content", //소비, 지출의 내용
      amount:"$100",
-     type:1
+     type:1 //1은 수익  0은 지출을 나타냄
     },
     {date:"2024-09-02",
       content:"Sample Content",
@@ -63,11 +65,11 @@ const MoneyChange = () => {
             <Text style={styles.dateText}>{selectedDate}</Text>
           </View>
         )}
-        {data_list.slice() // 원본 배열을 복사합니다.
-        .reverse() // 복사한 배열을 역순으로 바꿉니다.
+        {data_list.slice() // 지출,수익 배열을 복사
+        .reverse() // 복사한 배열을 역순으로 바꿈
         .map((item, index)=>{
           return(
-            <MoneyChangeButton key = {index}
+            <MoneyChangeButton key = {index} //해당 배열을 MoneyChangeButton 배열로 만듦  또한 클릭시 수정가능
            date={item.date}
            content={item.content}
            amount={item.amount}
@@ -75,21 +77,10 @@ const MoneyChange = () => {
            />
           )
         })}
-        <MoneyChangeButton
-          date="2024-08-08"
-          content="Sample Content"
-          amount="$100"
-          type={0} // 0: 빨간색 선, 1: 파란색 선
-        />
-        <MoneyChangeButton
-          date="2024-08-06"
-          content="Another Content"
-          amount="$200"
-          type={1} // 0: 빨간색 선, 1: 파란색 선
-        />
+        
         {/* 더 많은 MoneyChangeButton을 추가할 수 있습니다 */}
       </ScrollView>
-      <PlusButton /> {/* PlusButton 추가 */}
+      <PlusButton selectedDate={selectedDate} /> {/* PlusButton 추가 */}
     </View>
   );
 };

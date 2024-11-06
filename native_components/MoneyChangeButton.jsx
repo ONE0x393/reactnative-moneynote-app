@@ -6,7 +6,7 @@ const MoneyChangeButton = ({ date, content, amount, type }) => {
   const navigation = useNavigation(); // useNavigation 훅을 사용하여 네비게이션 객체를 가져옵니다
 
   const handlePress = () => {
-    navigation.navigate('AccountForm');
+    navigation.navigate('AccountForm'); //클릭시 해당 건에 대해 수정하기 위해 AccountForm으로 이동
   };
 
   return (
