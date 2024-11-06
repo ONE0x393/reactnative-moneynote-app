@@ -64,23 +64,22 @@ const MoneyChange = () => {
           <View style={styles.dateContainer}>
             <Text style={styles.dateText}>{selectedDate}</Text>
           </View>
-        )}
+        )} {/* 상단에 날짜 표시 */}
         {data_list.slice() // 지출,수익 배열을 복사
         .reverse() // 복사한 배열을 역순으로 바꿈
         .map((item, index)=>{
           return(
-            <MoneyChangeButton key = {index} //해당 배열을 MoneyChangeButton 배열로 만듦  또한 클릭시 수정가능
+          <MoneyChangeButton key = {index} //해당 배열을 MoneyChangeButton 배열로 만듦  또한 클릭시 수정가능
            date={item.date}
            content={item.content}
            amount={item.amount}
            type={item.type}
+           selectedDate = {item.date}
            />
           )
         })}
-        
-        {/* 더 많은 MoneyChangeButton을 추가할 수 있습니다 */}
       </ScrollView>
-      <PlusButton selectedDate={selectedDate} /> {/* PlusButton 추가 */}
+      <PlusButton selectedDate={selectedDate} /> {/* PlusButton 추가, 선택된 날짜(selectedDate)를 전달함 */}
     </View>
   );
 };

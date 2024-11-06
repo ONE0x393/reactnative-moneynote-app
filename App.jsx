@@ -31,14 +31,14 @@ function App() {
               headerShown: false, // Stack의 MenuBar를 사용하지 않도록 설정
             }}
           >
-            <Stack.Screen name="Main" component={Main} />
-            <Stack.Screen name="Login" component={LoginPage} />
-            <Stack.Screen name="MoneyChange" component={MomneyChange} />
-            <Stack.Screen name="AccountList" component={AccountList} />
-            <Stack.Screen name="PayChart" component={PayChart} />
+            <Stack.Screen name="Main" component={Main} />{/* 메인: 월 총지출-수익 표기, 일별 총지출-수익 표기  */}
+            <Stack.Screen name="Login" component={LoginPage} />{/* 로그인 페이지  */}
+            <Stack.Screen name="MoneyChange" component={MomneyChange} />{/* 지출,수익 내역 리스트  */}
+            <Stack.Screen name="AccountList" component={AccountList} />{/* 계좌 및 금융수단 리스트  */}
+            <Stack.Screen name="PayChart" component={PayChart} />{/* 지출 카테고리 Pie그래프 분석  */}
             <Stack.Screen name="Terms" component={Terms} />
             <Stack.Screen name="Signup" component={Signup} />
-            <Stack.Screen name="AccountForm" component={AccountForm} />
+            <Stack.Screen name="AccountForm" component={AccountForm} />{/* 지출,수익 수정 및 등록 */}
             <Stack.Screen name="AccountEdit" component={AccountEdit} />
           </Stack.Navigator>
         </View>

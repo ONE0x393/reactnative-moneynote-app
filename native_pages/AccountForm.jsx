@@ -7,11 +7,12 @@ import { useRoute } from '@react-navigation/native';
 
 function AccountForm() {
   const route = useRoute();
-  const todayDate = new Date().toISOString().split('T')[0];
-  const { chosenDate = todayDate } = route.params || {};
+  const todayDate = new Date().toISOString().split('T')[0]; //금일 날짜 저장
+  const { chosenDate = todayDate ,  del_positive = 0} = route.params || {}; //달력을 선택하여 MoneyChange페이지로 이동한 것이 아닌 경우 todayDate를 디폴트로 가져옴
+  //del_positive는 수정을 목적으로 해당 페이지로 접근할 경우 "삭제" 버튼을 제공하기 위한 것
 
   const [type, setType] = useState('income');
-  const [date, setDate] = useState(new Date(chosenDate));
+  const [date, setDate] = useState(new Date(chosenDate));  //선택된 날짜를 기본값으로 설정
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState('');
   const [content, setContent] = useState('');
@@ -35,6 +36,7 @@ function AccountForm() {
     console.log(data);
     navigation.goBack(); // 이전 페이지로 이동
   };
+
 
   return (
     <View style={styles.container}>
@@ -100,7 +102,19 @@ function AccountForm() {
         />
       </View>
 
-      <Button title="저장" onPress={handleSubmit} />
+      <View style={styles.formGroup}>
+        <Button title="저장" onPress={handleSubmit} /> {/*여기서 데이터베이스에 저장*/}
+      </View>
+
+      {del_positive === 1 &&(  //0이면 비활성화, 1이면 수정을 위한 것이므로 활성화 시킴
+        <View style={styles.formGroup}>
+          <Button title="삭제" onPress={handleSubmit} /> {/* 삭제 버튼 */}
+        </View>
+      )}
+      {/*가장 중요한 것은 AccountForm페이지에 2가지 이동방법이 있는데
+      1. MoneyChange페이지에서 새로운 내역을 추가하기 위해 "+"버튼을 누름
+      2. 기존의 내역을 클릭하여 "수정"하기 위해 버튼을 누름
+      1의 경우 아무런 문제가 없지만 2의 경우 삭제버튼 또한 준비해야한다.*/}
     </View>
   );
 }
@@ -128,6 +142,9 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 4,
     padding: 10,
+  },
+  buttonMargin:{
+    marginBottom:20,
   },
 });
 

@@ -5,7 +5,7 @@ import EI_View from '../native_components/EI_View'; // 지출 및 수익 컴포�
 import MonthPayBar from '../native_components/MonthPayBar'; // 막대 그래프 컴포넌트
 
 const Main = () => {
-  // 12개월 동안의 데이터 (모두 50으로 설정)
+  // 12개월 동안의 데이터
   const monthlyData = [50, 40, 70, 43, 34, 27, 55, 67, 5, 0, 0, 0]
   const calendarData = {
     '2024-09-05': {
@@ -25,16 +25,17 @@ const Main = () => {
       income: 67000,
     },
     // 더 많은 날짜 추가 가능...
+    // 특정 날짜의 총 지출, 수익을 표시하기 위한 값
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {/* 지출 및 수익 컴포넌트 */}
-      <EI_View expenses="200,000" income="540,000" />
+      <EI_View expenses="200,000" income="540,000" />  {/* expenses에 지출, income에 수익을 넣어 상단에 표시 */}
       {/* 달력 컴포넌트 */}
-      <CustomCalendar calendarData={calendarData} />
+      <CustomCalendar calendarData={calendarData} /> {/* 특정날짜의 총지출,수익 금액에 대한 정보인 calendarData를 전달하여 출력 */}
       {/* 12개월 막대 그래프 컴포넌트 */}
-      <MonthPayBar data={monthlyData} />
+      <MonthPayBar data={monthlyData} /> {/* 월별 지출 금액을 막대 그래프로 표현, 제거고려 */}
     </ScrollView>
   );
 };
