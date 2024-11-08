@@ -55,21 +55,6 @@ function LoginPage() {
           <Text style={styles.link}>회원가입</Text>
         </TouchableOpacity>
       </View>
-
-      <View style={styles.socialLoginContainer}>
-        <TouchableOpacity style={styles.socialButton}>
-          <Text style={styles.socialButtonText}>N</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.socialButton}>
-          <Text style={styles.socialButtonText}>G</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.socialButton}>
-          <Text style={styles.socialButtonText}>F</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.socialButton}>
-          <Text style={styles.socialButtonText}>T</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 }
