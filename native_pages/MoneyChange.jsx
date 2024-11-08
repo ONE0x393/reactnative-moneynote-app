@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import MoneyChangeButton from '../native_components/MoneyChangeButton'; // 경로 수정
@@ -8,61 +8,38 @@ import { format } from 'date-fns';
 const MoneyChange = () => {
   const route = useRoute();
   const todayDate = format(new Date(), 'yyyy-MM-dd');// 오늘 날짜
-  const { selectedDate = todayDate } = route.params || {};
-  const data_list = [ //지출, 수익 내역
-    {date:"2024-09-01",
-     content:"Sample Content", //소비, 지출의 내용
-     amount:"$100",
-     type:1 //1은 수익  0은 지출을 나타냄
-    },
-    {date:"2024-09-02",
-      content:"Sample Content",
-      amount:"$100",
-      type:1
-     },
-     {date:"2024-09-03",
-      content:"Sample Content",
-      amount:"$100",
-      type:1
-     },
-     {date:"2024-09-04",
-      content:"Sample Content",
-      amount:"$100",
-      type:0
-     },
-     {date:"2024-09-05",
-      content:"Sample Content",
-      amount:"$100",
-      type:0
-     },
-     {date:"2024-09-06",
-      content:"Sample Content",
-      amount:"$100",
-      type:1
-     },
-     {date:"2024-09-07",
-      content:"Sample Content",
-      amount:"$100",
-      type:1
-     },
-     {date:"2024-09-08",
-      content:"Sample Content",
-      amount:"$100",
-      type:0
-     },
-     {date:"2024-09-09",
-      content:"Sample Content",
-      amount:"$100",
-      type:1
-     },
-  ];
+  const { selectedDate, newData } = route.params || {};
+  const selectedID = "Jeeny doe";
+  const [data_list, setDataList] = useState([]);
+
+  const effectiveDate = selectedDate || todayDate;// 'selectedDate'가 없다면 오늘 날짜로 설정
+
+  useEffect(() => {
+    if (newData) {
+      setDataList((prevData) => [newData, ...prevData]); // 기존 데이터에 새로운 데이터를 추가
+    }
+    const fetchData = async () => {
+      try {
+        const results = await callFirestore.getDataByDoc({
+          collectionName: "moneyChange", // Firebase 컬렉션 이름
+          ID: selectedID,
+          date: effectiveDate,
+        });
+        setDataList(results); // data_list에 가져온 데이터 저장
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [selectedDate,newData]);
 
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {selectedDate && (
+        {effectiveDate && (
           <View style={styles.dateContainer}>
-            <Text style={styles.dateText}>{selectedDate}</Text>
+            <Text style={styles.dateText}>{effectiveDate}</Text>
           </View>
         )} {/* 상단에 날짜 표시 */}
         {data_list.slice() // 지출,수익 배열을 복사
@@ -75,11 +52,13 @@ const MoneyChange = () => {
            amount={item.amount}
            type={item.type}
            selectedDate = {item.date}
+           category={item.category}
+           chosenID = {selectedID}
            />
           )
         })}
       </ScrollView>
-      <PlusButton selectedDate={selectedDate} /> {/* PlusButton 추가, 선택된 날짜(selectedDate)를 전달함 */}
+      <PlusButton selectedDate={selectedDate} chosenID = {selectedID}/> {/* PlusButton 추가, 선택된 날짜(selectedDate)를 전달함 */}
     </View>
   );
 };

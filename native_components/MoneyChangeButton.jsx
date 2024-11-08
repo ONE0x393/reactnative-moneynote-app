@@ -2,11 +2,12 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // 페이지 이동을 위해 추가
 
-const MoneyChangeButton = ({ date, content, amount, type, selectedDate }) => {
+const MoneyChangeButton = ({ date, content, amount, type, category, selectedDate, selectedID }) => {
   const navigation = useNavigation(); // useNavigation 훅을 사용하여 네비게이션 객체를 가져옵니다
 
   const handlePress = () => {
-    navigation.navigate('AccountForm', { chosenDate: selectedDate, del_positive: 1 }); //클릭시 해당 건에 대해 "수정"하기 위해 AccountForm으로 이동
+    navigation.navigate('AccountForm', { chosenDate: selectedDate, del_positive: 1 ,
+       chosenID: selectedID, selContent:content, selAmount: String(amount), selType: (type===0)?'expense':'income',selCategory:category }); //클릭시 해당 건에 대해 "수정"하기 위해 AccountForm으로 이동
   };
 
   return (
