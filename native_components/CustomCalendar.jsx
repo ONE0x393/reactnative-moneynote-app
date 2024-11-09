@@ -11,25 +11,26 @@ const CustomCalendar = ({ calendarData }) => {
   };
 
   // markedDates를 calendarData에 맞게 생성
-  const markedDates = Object.keys(calendarData).reduce((acc, date) => {
-    const { expenses, income } = calendarData[date];
-    acc[date] = {
-      customStyles: {
-        container: {
-          backgroundColor: '#e6f7ff', // 날짜 배경색
+  const markedDates = calendarData && Object.keys(calendarData).length > 0
+  ? Object.keys(calendarData).reduce((acc, date) => {
+      const { expenses, income } = calendarData[date];
+      acc[date] = {
+        customStyles: {
+          container: {
+            backgroundColor: '#e6f7ff', // 날짜 배경색
+          },
+          text: {
+            color: '#000',
+            fontWeight: 'bold',
+          },
         },
-        text: {
-          color: '#000',
-          fontWeight: 'bold',
-        },
-      },
-      marked: true,
-      customText_expens: `-${expenses.toLocaleString()}`,
-      customText_income: `+${income.toLocaleString()}`,
-    };
-    return acc;
-  }, {});
-
+        marked: true,
+        customText_expens: expenses ? `-${expenses.toLocaleString()}` : '',
+        customText_income: income ? `+${income.toLocaleString()}` : '',
+      };
+      return acc;
+    }, {})
+  : {};
   return (
     <View style={styles.container}>
       <Calendar

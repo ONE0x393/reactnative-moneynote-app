@@ -1,4 +1,4 @@
-import { collection, query, where, doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, query, where, doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, Timestamp } from 'firebase/firestore';
 import { db } from "./firebase";
 
 /* *** SELECT *** */
@@ -27,6 +27,33 @@ const getDataByDoc = async ({ collectionName, ID, date }) => {
     });
 
     return results; // 조건에 맞는 모든 문서의 데이터를 배열로 반환
+  } catch (error) {
+    console.error("Error fetching documents:", error);
+    throw error;
+  }
+};
+
+const getDataByMonth = async ({ collectionName, ID, date }) => {
+  try {
+    // 전달받은 date (예: "2024-11-09")에서 월(YYYY-MM)만 추출
+    const yearMonth = date.slice(0, 7);  // "2024-11" 형태로 추출
+
+    // Firestore 쿼리: ID와 월(YYYY-MM)을 기준으로 데이터 필터링
+    const q = query(
+      collection(db, collectionName),
+      where("ID", "==", ID),
+      where("date", ">=", yearMonth + "-01"),  // 해당 월의 1일부터
+      where("date", "<", (parseInt(yearMonth.slice(5, 7)) + 1).toString().padStart(2, '0') + "-01")  // 다음 월의 1일 이전까지
+    );
+
+    const querySnapshot = await getDocs(q);
+    const results = [];
+
+    querySnapshot.forEach((doc) => {
+      results.push(doc.data());
+    });
+
+    return results; // 해당 월에 해당하는 모든 문서의 데이터를 배열로 반환
   } catch (error) {
     console.error("Error fetching documents:", error);
     throw error;
@@ -151,6 +178,7 @@ const deleteDatabyDoc = async ({collectionName, ID, date, category, amount, cont
 global.callFirestore = {
   getDataAll,
   getDataByDoc,
+  getDataByMonth,
   getData,
 
   addData,

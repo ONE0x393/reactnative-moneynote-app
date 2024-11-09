@@ -11,7 +11,7 @@ function AccountForm() {
   const route = useRoute();
   const todayDate = new Date().toISOString().split('T')[0];
   const { chosenDate = todayDate ,  del_positive = 0, chosenID = "Jeeny doe",
-    selContent = "", selAmount = "", selType='income', selCategory="",
+    selContent = "", selAmount = "", selType='income', selCategory='food',
   } = route.params || {};
 
   const [ttype, setType] = useState(selType);
@@ -50,7 +50,7 @@ function AccountForm() {
     };
 
     
-    //console.log(data);
+    console.log(data.category);
     try {
       if (selectMethod === "Add") {  // Firebase에 data 저장
         callFirestore.addData({
@@ -72,6 +72,7 @@ function AccountForm() {
           category: category,
           content: content,
         });
+        data.ID="";
       }
       else if(selectMethod === "Del"){
         callFirestore.deleteDatabyDoc({
@@ -82,6 +83,7 @@ function AccountForm() {
           category: category,
           content: content,
         });
+        data.ID="";
       }
       // 저장 후 화면을 이전 페이지로 돌아가기
       //navigation.goBack();
