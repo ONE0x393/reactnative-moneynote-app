@@ -10,10 +10,10 @@ import { useFocusEffect } from '@react-navigation/native';
 const Main = () => {
   const todayDate = format(new Date(), 'yyyy-MM-dd');// 오늘 날짜
   // 12개월 동안의 데이터
-  const monthlyData = [50, 40, 70, 43, 34, 27, 55, 67, 5, 0, 0, 0]
+  
+  const [monthlyExpense,setMonthlyExpense] = useState(Array(12).fill(0)); 
+  const [monthlyIncome,setMonthlyIncome] = useState(Array(12).fill(0)); 
   const [calendarData, setCalendarData] = useState([]);
-  const [curExpenses, setCurExpenses] = useState(0);
-  const [curIncome, setCurIncome] = useState(0);
 
   useFocusEffect(
     useCallback(() => {
@@ -40,18 +40,27 @@ const Main = () => {
 
           // 해당 월의 데이터 가져오기
           
-          const month = await callFirestore.getDataByMonth({ collectionName: "moneyChange", ID: "Jeeny doe", year:todayDate.slice(0,4) , month: todayDate.slice(5,7) });
-          let tmpE = 0;
-          let tmpI = 0;
-          for (const item of month) {
-            if (item.type === 0) {
-              tmpE += item.amount;
-            } else if (item.type === 1) {
-              tmpI += item.amount;
+          const expenseArr = Array(12).fill(0);
+          const incomeArr = Array(12).fill(0);
+
+          for (let i = 1; i <= 12; i++) { //월별 지출, 수익 합산 구하기
+            const m = await callFirestore.getDataByMonth({ collectionName: "moneyChange", ID: "Jeeny doe", year: todayDate.slice(0, 4), month: String(i) });
+            let tempE = 0;
+            let tempI = 0;
+            for (const t of m) {
+              if (t.type === 0) {
+                tempE += t.amount;
+              } else if (t.type === 1) {
+                tempI += t.amount;
+              }
             }
+            expenseArr[i - 1] = tempE;
+            incomeArr[i - 1]=tempI;
+            //console.log(i, m);
           }
-          setCurExpenses(tmpE);
-          setCurIncome(tmpI);
+
+          setMonthlyExpense(expenseArr);
+          setMonthlyIncome(incomeArr);
 
           setCalendarData(formattedData);
         } catch (error) {
@@ -69,13 +78,15 @@ const Main = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {/* 지출 및 수익 컴포넌트 */}
-      <EI_View expenses={curExpenses} income={curIncome} />  {/* expenses에 지출, income에 수익을 넣어 상단에 표시 */}
+      
+      <EI_View expenses={monthlyExpense[Number(todayDate.slice(5,7))-1]} income={monthlyIncome[Number(todayDate.slice(5,7))-1]} />  
+      {/* expenses에 지출, income에 수익을 넣어 상단에 표시 */}
       {/* 달력 컴포넌트 */}
-      <CustomCalendar calendarData={calendarData} /> {/* 특정날짜의 총지출,수익 금액에 대한 정보인 calendarData를 전달하여 출력 */}
+      <CustomCalendar calendarData={calendarData} />
+      {/* 특정날짜의 총지출,수익 금액에 대한 정보인 calendarData를 전달하여 출력 */}
       {/* 12개월 막대 그래프 컴포넌트 */}
-      {/*<MonthPayBar data={monthlyData} />*/}
-      <MonthPayBar data={monthlyData} />
+      <MonthPayBar data={monthlyExpense} />
+      
     </ScrollView>
   );
 };

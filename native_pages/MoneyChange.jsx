@@ -44,7 +44,8 @@ const MoneyChange = () => {
           <View style={styles.dateContainer}>
             <Text style={styles.dateText}>{effectiveDate}</Text>
           </View>
-        )} {/* 상단에 날짜 표시 */}
+        )}
+        {/* 상단에 날짜 표시 */}
         {data_list.slice() // 지출,수익 배열을 복사
         .reverse() // 복사한 배열을 역순으로 바꿈
         .map((item, index)=>{
@@ -56,7 +57,8 @@ const MoneyChange = () => {
           )
         })}
       </ScrollView>
-      <PlusButton selectedDate={selectedDate} chosenID = {selectedID} item = {plusDummy}/> {/* PlusButton 추가, 선택된 날짜(selectedDate)를 전달함 */}
+      <PlusButton selectedDate={selectedDate} chosenID = {selectedID} item = {plusDummy}/> 
+      {/* PlusButton 추가, 선택된 날짜(selectedDate)를 전달함 */}
     </View>
   );
 };

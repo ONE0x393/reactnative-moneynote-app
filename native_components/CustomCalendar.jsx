@@ -12,25 +12,26 @@ const CustomCalendar = ({ calendarData }) => {
 
   // markedDates를 calendarData에 맞게 생성
   const markedDates = calendarData && Object.keys(calendarData).length > 0
-  ? Object.keys(calendarData).reduce((acc, date) => {
-      const { expenses, income } = calendarData[date];
-      acc[date] = {
-        customStyles: {
-          container: {
-            backgroundColor: '#e6f7ff', // 날짜 배경색
+    ? Object.keys(calendarData).reduce((acc, date) => {
+        const { expenses, income } = calendarData[date];
+        acc[date] = {
+          customStyles: {
+            container: {
+              backgroundColor: '#e6f7ff', // 날짜 배경색
+            },
+            text: {
+              color: '#000',
+              fontWeight: 'bold',
+            },
           },
-          text: {
-            color: '#000',
-            fontWeight: 'bold',
-          },
-        },
-        marked: true,
-        customText_expens: expenses ? `-${expenses.toLocaleString()}` : '',
-        customText_income: income ? `+${income.toLocaleString()}` : '',
-      };
-      return acc;
-    }, {})
-  : {};
+          marked: true,
+          customText_expens: expenses && !isNaN(expenses) ? `-${expenses.toLocaleString()}` : null,
+          customText_income: income && !isNaN(income) ? `+${income.toLocaleString()}` : null,
+        };
+        return acc;
+      }, {})
+    : {};
+
   return (
     <View style={styles.container}>
       <Calendar
@@ -56,18 +57,19 @@ const CustomCalendar = ({ calendarData }) => {
                 <Text style={[styles.dateText, state === 'disabled' && { color: 'gray' }]}>
                   {date.day}
                 </Text>
-                {/* 지출 텍스트 */}
-                {marking?.customText_expens && (
+
+                {/* Ensure marking is present before rendering text */}
+                {marking && marking.customText_expens ? (
                   <Text style={[styles.customText, { color: 'red' }]}>
                     {marking.customText_expens}
                   </Text>
-                )}
-                {/* 수익 텍스트 */}
-                {marking?.customText_income && (
+                ) : null}
+
+                {marking && marking.customText_income ? (
                   <Text style={[styles.customText, { color: 'blue' }]}>
                     {marking.customText_income}
                   </Text>
-                )}
+                ) : null}
               </View>
             </TouchableOpacity>
           );
@@ -85,14 +87,12 @@ const styles = StyleSheet.create({
     padding: 10, // 날짜 컨테이너 안쪽 여백을 늘려서 간격을 넓힘
     margin: 5, // 날짜 컨테이너 바깥쪽 여백을 추가하여 간격 조절
     alignItems: 'center',
-    
   },
   dateText: {
     fontSize: 16,
   },
   customText: {
     fontSize: 10,
-    
   },
 });
 

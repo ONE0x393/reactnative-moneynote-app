@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
-import { VictoryChart, VictoryBar, VictoryAxis, VictoryLabel } from 'victory-native';
+import { BarChart } from 'react-native-chart-kit';
 
 const MonthPayBar = ({ data }) => {
   const [chartWidth, setChartWidth] = useState(Dimensions.get('window').width);
@@ -26,28 +26,35 @@ const MonthPayBar = ({ data }) => {
 
   return (
     <View style={styles.container}>
-      <VictoryChart
-        width={chartWidth}
-        height={300}
-        domainPadding={20} // 막대와 X축 사이의 간격
-      >
-        <VictoryAxis
-          tickValues={months.map((_, index) => index + 1)} // X축의 위치를 1부터 12까지 설정
-          tickFormat={months} // 레이블로 월별 이름을 설정
-          style={{
-            axis: { stroke: '#ccc' },
-            tickLabels: { fontSize: 12, padding: 5 }
-          }}
-        />
-        <VictoryBar
-          data={data.map((value, index) => ({ x: index + 1, y: value }))}
-          style={{
-            data: { fill: '#d1c4e9' }, // 막대 색상
-          }}
-          labels={({ datum }) => datum.y} // 막대 위에 표시할 값
-          labelComponent={<VictoryLabel dy={-10} />} // 값의 위치 조정
-        />
-      </VictoryChart>
+      <BarChart
+        data={{
+          labels: months, // 월별 레이블
+          datasets: [
+            {
+              data: data, // 월별 데이터 값
+            }
+          ]
+        }}
+        width={chartWidth} // 차트 너비
+        height={300} // 차트 높이
+        chartConfig={{
+          backgroundColor: '#fff',
+          backgroundGradientFrom: '#fff',
+          backgroundGradientTo: '#fff',
+          decimalPlaces: 0, // 소수점 이하 자리수
+          color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`, // 막대 색상 (빨간색)
+          labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // 레이블 색상
+          style: {
+            borderRadius: 16,
+          },
+          propsForLabels: {
+            fontSize: 12, // 레이블의 글자 크기
+            padding: 5, // 레이블의 간격
+          },
+        }}
+        fromZero={true} // Y축이 0부터 시작하도록 설정
+        showValuesOnTopOfBars={true} // 막대 위에 값 표시
+      />
     </View>
   );
 };

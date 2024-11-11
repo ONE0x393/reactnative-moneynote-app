@@ -11,7 +11,8 @@ const MoneyChangeButton = ({ item, date, content, amount, type, category, select
 
   return (
     <TouchableOpacity style={styles.button} onPress={handlePress}>
-      <View style={[styles.line, { backgroundColor: item.type === 0 ? 'red' : 'blue' }]} />{/*지출(red),수익(blue)에 대한 것을 분별하여 선으로 표시*/}
+      <View style={[styles.line, { backgroundColor: item.type === 0 ? 'red' : 'blue' }]} />
+      {/*지출(red),수익(blue)에 대한 것을 분별하여 선으로 표시*/}
       <View style={styles.content}>
         <Text style={styles.date}>{item.date}</Text>
         <Text style={styles.contentText}>{item.content}</Text>

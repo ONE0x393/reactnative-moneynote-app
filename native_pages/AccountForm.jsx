@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
@@ -9,18 +9,19 @@ import { collection, Timestamp } from 'firebase/firestore';
 
 function AccountForm() {
   const route = useRoute();
-  const todayDate = new Date().toISOString().split('T')[0];
+  const todayDate = format(new Date(), 'yyyy-MM-dd');// 오늘 날짜
   const { del_positive = 0, chosenID = "Jeeny doe", item} = route.params || {};
 
   const [ttype, setType] = useState((item.type===0)?'expense':'income');
   let type=0;
   const [tdate, setDate] = useState(new Date(item.date));
   const [tamount, setAmount] = useState(item.amount);
-  const [category, setCategory] = useState(item.category);
+  const [category, setCategory] = useState((item.category===undefined)?"food":item.category);
   const [content, setContent] = useState(item.content);
   const navigation = useNavigation();
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [ID, setID] = useState(chosenID);
+  const [realTime, setRealTime] = useState(Timestamp.now());
 
   //const [tempID, tempDate, tempAmount, tempCategory, tempContent] = 
   
@@ -31,12 +32,21 @@ function AccountForm() {
     setShowDatePicker(false);
     setDate(currentDate);
   };
+  useEffect(()=>{
+    const date = format(tdate, 'yyyy-MM-dd');
+    if(date.slice(5,7)!==todayDate.slice(5,7)||date.slice(0,4)!==todayDate.slice(0,4)){
+      const currentTime = new Date();
+      const newDate = new Date(Number(date.slice(0, 4)), Number(date.slice(5, 7))-1, Number(date.slice(8)), currentTime.getHours(), currentTime.getMinutes(), currentTime.getSeconds());
+      setRealTime(newDate);
+    }
+  },[])
 
   const handleSubmit = () => {
     if(ttype ==='income') type = 1
     else if(ttype ==='expense')type=0
     const date = format(tdate, 'yyyy-MM-dd');
     const amount = Number(tamount);
+    
 
     const data = {
       type,
@@ -45,20 +55,19 @@ function AccountForm() {
       category,
       content,
       ID,
-      realTime: Timestamp.now(),
+      realTime,
     };
 
-    
-    console.log(data.category);
     try {
+      let firestorePromise;
       if (selectMethod === "Add") {  // Firebase에 data 저장
-        callFirestore.addData({
+        firestorePromise = callFirestore.addData({
           collection: 'moneyChange',  // 컬렉션 이름
           data: data,                 // 저장할 데이터
         });
       }
       else if(selectMethod === "Modify"){
-        callFirestore.updateDatabyDoc({
+        firestorePromise = callFirestore.updateDatabyDoc({
           collectionName: "moneyChange", // Firebase 컬렉션 이름
           searchID: chosenID,
           searchdate: item.date,
@@ -74,7 +83,7 @@ function AccountForm() {
         data.ID="";
       }
       else if(selectMethod === "Del"){
-        callFirestore.deleteDatabyDoc({
+        firestorePromise = callFirestore.deleteDatabyDoc({
           collectionName: "moneyChange", // Firebase 컬렉션 이름
           ID: ID,
           date: date,
@@ -86,10 +95,12 @@ function AccountForm() {
       }
       // 저장 후 화면을 이전 페이지로 돌아가기
       //navigation.goBack();
-      navigation.navigate('MoneyChange', {
-        newData: data,  // 새로운 데이터 전달
-        selectedDate: date,
-      });
+      firestorePromise.then(()=>{
+        navigation.navigate('MoneyChange', {
+          newData: data,  // 새로운 데이터 전달
+          selectedDate: date,
+        });
+      }).catch(errer=>{console.log("Error submitting data: ", error)})
 
       
     } catch (error) {
@@ -111,6 +122,7 @@ function AccountForm() {
     selectMethod = "Del";
     handleSubmit();
   };
+  
 
   return (
     <View style={styles.container}>
