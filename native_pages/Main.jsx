@@ -39,7 +39,8 @@ const Main = () => {
           }, {});
 
           // 해당 월의 데이터 가져오기
-          const month = await callFirestore.getDataByMonth({ collectionName: "moneyChange", ID: "Jeeny doe", date: todayDate });
+          
+          const month = await callFirestore.getDataByMonth({ collectionName: "moneyChange", ID: "Jeeny doe", year:todayDate.slice(0,4) , month: todayDate.slice(5,7) });
           let tmpE = 0;
           let tmpI = 0;
           for (const item of month) {
@@ -53,8 +54,6 @@ const Main = () => {
           setCurIncome(tmpI);
 
           setCalendarData(formattedData);
-
-          //console.log(month);
         } catch (error) {
           console.error("Error fetching data:", error);
         }
@@ -71,12 +70,12 @@ const Main = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {/* 지출 및 수익 컴포넌트 */}
-      <EI_View expenses={curExpenses} income={String(curIncome)} />  {/* expenses에 지출, income에 수익을 넣어 상단에 표시 */}
+      <EI_View expenses={curExpenses} income={curIncome} />  {/* expenses에 지출, income에 수익을 넣어 상단에 표시 */}
       {/* 달력 컴포넌트 */}
       <CustomCalendar calendarData={calendarData} /> {/* 특정날짜의 총지출,수익 금액에 대한 정보인 calendarData를 전달하여 출력 */}
       {/* 12개월 막대 그래프 컴포넌트 */}
-      {/*<MonthPayBar data={monthlyData} /> {/* 월별 지출 금액을 막대 그래프로 표현, 제거고려 */}
-      <MonthPayBar data={monthlyData} /> 
+      {/*<MonthPayBar data={monthlyData} />*/}
+      <MonthPayBar data={monthlyData} />
     </ScrollView>
   );
 };

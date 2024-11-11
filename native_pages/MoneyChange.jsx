@@ -14,6 +14,8 @@ const MoneyChange = () => {
 
   const effectiveDate = selectedDate || todayDate;// 'selectedDate'가 없다면 오늘 날짜로 설정
 
+  const plusDummy = {ID:selectedID, date:effectiveDate, amount:'', catecory:'food',content:'',type:1,}
+
   useEffect(() => {
     if (newData) {
       setDataList((prevData) => [newData, ...prevData]); // 기존 데이터에 새로운 데이터를 추가
@@ -26,6 +28,7 @@ const MoneyChange = () => {
           date: effectiveDate,
         });
         setDataList(results); // data_list에 가져온 데이터 저장
+        //console.log(results);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -47,18 +50,13 @@ const MoneyChange = () => {
         .map((item, index)=>{
           return(
           <MoneyChangeButton key = {index} //해당 배열을 MoneyChangeButton 배열로 만듦  또한 클릭시 수정가능
-           date={item.date}
-           content={item.content}
-           amount={item.amount}
-           type={item.type}
-           selectedDate = {item.date}
-           category={item.category}
+           item = {item}
            chosenID = {selectedID}
            />
           )
         })}
       </ScrollView>
-      <PlusButton selectedDate={selectedDate} chosenID = {selectedID}/> {/* PlusButton 추가, 선택된 날짜(selectedDate)를 전달함 */}
+      <PlusButton selectedDate={selectedDate} chosenID = {selectedID} item = {plusDummy}/> {/* PlusButton 추가, 선택된 날짜(selectedDate)를 전달함 */}
     </View>
   );
 };

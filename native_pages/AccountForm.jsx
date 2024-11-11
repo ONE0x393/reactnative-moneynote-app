@@ -5,21 +5,19 @@ import { useNavigation } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useRoute } from '@react-navigation/native';
 import { format } from 'date-fns';
-import { collection } from 'firebase/firestore';
+import { collection, Timestamp } from 'firebase/firestore';
 
 function AccountForm() {
   const route = useRoute();
   const todayDate = new Date().toISOString().split('T')[0];
-  const { chosenDate = todayDate ,  del_positive = 0, chosenID = "Jeeny doe",
-    selContent = "", selAmount = "", selType='income', selCategory='food',
-  } = route.params || {};
+  const { del_positive = 0, chosenID = "Jeeny doe", item} = route.params || {};
 
-  const [ttype, setType] = useState(selType);
+  const [ttype, setType] = useState((item.type===0)?'expense':'income');
   let type=0;
-  const [tdate, setDate] = useState(new Date(chosenDate));
-  const [tamount, setAmount] = useState(selAmount);
-  const [category, setCategory] = useState(selCategory);
-  const [content, setContent] = useState(selContent);
+  const [tdate, setDate] = useState(new Date(item.date));
+  const [tamount, setAmount] = useState(item.amount);
+  const [category, setCategory] = useState(item.category);
+  const [content, setContent] = useState(item.content);
   const navigation = useNavigation();
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [ID, setID] = useState(chosenID);
@@ -47,6 +45,7 @@ function AccountForm() {
       category,
       content,
       ID,
+      realTime: Timestamp.now(),
     };
 
     
@@ -62,10 +61,10 @@ function AccountForm() {
         callFirestore.updateDatabyDoc({
           collectionName: "moneyChange", // Firebase 컬렉션 이름
           searchID: chosenID,
-          searchdate: chosenDate,
-          searchcategory: selCategory,
-          searchamount: Number(selAmount),
-          searchcontent: selContent,
+          searchdate: item.date,
+          searchcategory: item.category,
+          searchamount: Number(item.amount),
+          searchcontent: item.content,
           ID: ID,
           date: date,
           amount: amount,

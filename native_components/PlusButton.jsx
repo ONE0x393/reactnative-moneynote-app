@@ -2,11 +2,11 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // 페이지 이동을 위해 추가
 
-const PlusButton = ({ selectedDate, chosenID }) => {
+const PlusButton = ({ selectedDate, chosenID, item }) => {
   const navigation = useNavigation(); // useNavigation 훅을 사용하여 네비게이션 객체를 가져옵니다
 
   const handlePress = () => {
-    navigation.navigate('AccountForm', { chosenDate: selectedDate, chosenID:chosenID }); // AccountForm페이지로 이동, 달력에서 선택된 날짜를 전달
+    navigation.navigate('AccountForm', { chosenDate: selectedDate, chosenID:chosenID, item:item }); // AccountForm페이지로 이동, 달력에서 선택된 날짜를 전달
   };
 
   return (

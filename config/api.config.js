@@ -33,17 +33,18 @@ const getDataByDoc = async ({ collectionName, ID, date }) => {
   }
 };
 
-const getDataByMonth = async ({ collectionName, ID, date }) => {
+const getDataByMonth = async ({ collectionName, ID, year, month }) => {
   try {
-    // 전달받은 date (예: "2024-11-09")에서 월(YYYY-MM)만 추출
-    const yearMonth = date.slice(0, 7);  // "2024-11" 형태로 추출
+     // 지정한 년도와 월을 사용하여 해당 월의 시작일과 종료일 Timestamp 생성
+     const startDate = new Date(Number(year), Number(month) - 1, 1); // 해당 월의 1일
+     const endDate = new Date(Number(year), Number(month), 1); // 다음 월의 1일
 
     // Firestore 쿼리: ID와 월(YYYY-MM)을 기준으로 데이터 필터링
     const q = query(
       collection(db, collectionName),
       where("ID", "==", ID),
-      where("date", ">=", yearMonth + "-01"),  // 해당 월의 1일부터
-      where("date", "<", (parseInt(yearMonth.slice(5, 7)) + 1).toString().padStart(2, '0') + "-01")  // 다음 월의 1일 이전까지
+      where("realTime", ">=", Timestamp.fromDate(startDate)),  // 해당 월의 1일부터
+      where("realTime", "<", Timestamp.fromDate(endDate))  // 해당 월의 다음달 1일 전까지
     );
 
     const querySnapshot = await getDocs(q);

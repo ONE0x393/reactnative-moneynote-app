@@ -2,21 +2,20 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // 페이지 이동을 위해 추가
 
-const MoneyChangeButton = ({ date, content, amount, type, category, selectedDate, selectedID }) => {
+const MoneyChangeButton = ({ item, date, content, amount, type, category, selectedDate, selectedID }) => {
   const navigation = useNavigation(); // useNavigation 훅을 사용하여 네비게이션 객체를 가져옵니다
 
   const handlePress = () => {
-    navigation.navigate('AccountForm', { chosenDate: selectedDate, del_positive: 1 ,
-       chosenID: selectedID, selContent:content, selAmount: String(amount), selType: (type===0)?'expense':'income',selCategory:category }); //클릭시 해당 건에 대해 "수정"하기 위해 AccountForm으로 이동
+    navigation.navigate('AccountForm', { del_positive: 1 ,chosenID: selectedID, item: item}); //클릭시 해당 건에 대해 "수정"하기 위해 AccountForm으로 이동
   };
 
   return (
     <TouchableOpacity style={styles.button} onPress={handlePress}>
-      <View style={[styles.line, { backgroundColor: type === 0 ? 'red' : 'blue' }]} />{/*지출(red),수익(blue)에 대한 것을 분별하여 선으로 표시*/}
+      <View style={[styles.line, { backgroundColor: item.type === 0 ? 'red' : 'blue' }]} />{/*지출(red),수익(blue)에 대한 것을 분별하여 선으로 표시*/}
       <View style={styles.content}>
-        <Text style={styles.date}>{date}</Text>
-        <Text style={styles.contentText}>{content}</Text>
-        <Text style={styles.amount}>{amount}</Text>
+        <Text style={styles.date}>{item.date}</Text>
+        <Text style={styles.contentText}>{item.content}</Text>
+        <Text style={styles.amount}>{item.amount}</Text>
       </View>
     </TouchableOpacity>
   );
