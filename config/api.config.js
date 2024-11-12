@@ -12,6 +12,28 @@ const getDataAll = async o => {
   return retData;
 }
 
+const getDataByID = async ({ collectionName, ID}) => {
+  try {
+    // Firestore 쿼리: ID와 월(YYYY-MM)을 기준으로 데이터 필터링
+    const q = query(
+      collection(db, collectionName),
+      where("ID", "==", ID)
+    );
+
+    const querySnapshot = await getDocs(q);
+    const results = [];
+
+    querySnapshot.forEach((doc) => {
+      results.push(doc.data());
+    });
+
+    return results; // 해당 월에 해당하는 모든 문서의 데이터를 배열로 반환
+  } catch (error) {
+    console.error("Error fetching documents:", error);
+    throw error;
+  }
+};
+
 const getDataByDoc = async ({ collectionName, ID, date }) => {
   try {
     const q = query(
@@ -178,6 +200,7 @@ const deleteDatabyDoc = async ({collectionName, ID, date, category, amount, cont
 
 global.callFirestore = {
   getDataAll,
+  getDataByID,
   getDataByDoc,
   getDataByMonth,
   getData,

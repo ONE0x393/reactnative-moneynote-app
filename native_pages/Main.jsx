@@ -20,48 +20,36 @@ const Main = () => {
       const fetchData = async () => {
         try {
           // 모든 데이터 가져오기
-          const result = await callFirestore.getDataAll({ collection: "moneyChange" });
-          const formattedData = result.data.reduce((acc, item) => {
+          const result = await callFirestore.getDataByID({ collectionName: "moneyChange", ID: "Jeeny doe" });
+          const formattedData = result.reduce((acc, item) => {
             const { date, amount, type } = item;
             const formattedDate = date;
-
+      
             if (!acc[formattedDate]) {
               acc[formattedDate] = { expenses: 0, income: 0 };
             }
-
+      
             if (type === 0) {
               acc[formattedDate].expenses += amount;
             } else if (type === 1) {
               acc[formattedDate].income += amount;
             }
-
+      
             return acc;
           }, {});
-
-          // 해당 월의 데이터 가져오기
-          
-          const expenseArr = Array(12).fill(0);
-          const incomeArr = Array(12).fill(0);
-
-          for (let i = 1; i <= 12; i++) { //월별 지출, 수익 합산 구하기
-            const m = await callFirestore.getDataByMonth({ collectionName: "moneyChange", ID: "Jeeny doe", year: todayDate.slice(0, 4), month: String(i) });
-            let tempE = 0;
-            let tempI = 0;
-            for (const t of m) {
-              if (t.type === 0) {
-                tempE += t.amount;
-              } else if (t.type === 1) {
-                tempI += t.amount;
-              }
-            }
-            expenseArr[i - 1] = tempE;
-            incomeArr[i - 1]=tempI;
-            //console.log(i, m);
-          }
-
+      
+          // 월별 데이터 병렬로 가져오기
+          const monthPromises = Array.from({ length: 12 }, (_, i) => {
+            return callFirestore.getDataByMonth({ collectionName: "moneyChange", ID: "Jeeny doe", year: todayDate.slice(0, 4), month: String(i + 1) });
+          });
+      
+          const monthData = await Promise.all(monthPromises);
+      
+          const expenseArr = monthData.map(m => m.filter(t => t.type === 0).reduce((acc, t) => acc + t.amount, 0));
+          const incomeArr = monthData.map(m => m.filter(t => t.type === 1).reduce((acc, t) => acc + t.amount, 0));
+      
           setMonthlyExpense(expenseArr);
           setMonthlyIncome(incomeArr);
-
           setCalendarData(formattedData);
         } catch (error) {
           console.error("Error fetching data:", error);
