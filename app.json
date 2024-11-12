@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "CustomPro",
+    "name": "custom-pro",
     "slug": "custom-pro",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -24,9 +24,6 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-      "expo-build-properties"
-    ],
     "extra": {
       "eas": {
         "projectId": "18f2e90e-7fc8-4bb8-a536-80761955ee17"
