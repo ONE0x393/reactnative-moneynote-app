@@ -7,6 +7,8 @@ import { collection } from 'firebase/firestore';
 import { format } from 'date-fns';
 import { useFocusEffect } from '@react-navigation/native';
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const Main = () => {
   const todayDate = format(new Date(), 'yyyy-MM-dd');// 오늘 날짜
   // 12개월 동안의 데이터
@@ -14,6 +16,11 @@ const Main = () => {
   const [monthlyExpense,setMonthlyExpense] = useState(Array(12).fill(0)); 
   const [monthlyIncome,setMonthlyIncome] = useState(Array(12).fill(0)); 
   const [calendarData, setCalendarData] = useState([]);
+  
+  const getUid = async () => {
+    const value = await AsyncStorage.getItem("UID");
+    return value;
+  }
 
   useFocusEffect(
     useCallback(() => {

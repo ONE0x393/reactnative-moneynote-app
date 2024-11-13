@@ -45,8 +45,8 @@ export const auth = {
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
-        console.log(user);
-        okFn();
+        console.log("SignIn: ", user);
+        okFn(user);
       })
       .catch((error) => {
         const errorCode = error.code;

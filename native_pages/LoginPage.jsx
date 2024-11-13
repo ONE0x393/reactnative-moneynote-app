@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Button, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { auth } from "../config/firebase";
 
@@ -11,7 +12,16 @@ function LoginPage() {
 
   const handleLogin = () => {
     // 로그인 로직 구현
-    auth.signIn(email, password, ()=>{navigation.navigate('Main');});
+    const okFn = async (info) => {
+      try {
+        console.log("INSERT UID: ", info.uid);
+        await AsyncStorage.setItem("UID", info.uid);
+        navigation.navigate("Main");
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    auth.signIn(email, password, okFn);
   };
 
   const handleSignupClick = () => {
