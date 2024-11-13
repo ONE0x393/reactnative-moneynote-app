@@ -14,13 +14,13 @@ const MenuBar = () => {
   };
   const images = [
     require('../assets/icon_iamge/main.png'),
-    require('../assets/icon_iamge/login.png'),
     require('../assets/icon_iamge/money.png'),
     require('../assets/icon_iamge/account.png'),
     require('../assets/icon_iamge/piechart.png'),
+    require('../assets/icon_iamge/login.png'),
   ];
   // 각 버튼이 이동할 페이지 이름
-  const pages = ['Main', 'Login', 'MoneyChange', 'AccountList', 'PayChart'];
+  const pages = ['Main', 'MoneyChange', 'AccountList', 'PayChart', 'Login'];
 
   return (
     <View style={styles.container}>
