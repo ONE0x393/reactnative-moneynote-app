@@ -22,7 +22,7 @@ function UserInfoForm() {
         data: {
           uid: info.uid,
           name: info.name,
-          email: "cskim@gmail.com",
+          email: info.email,
           createdAt: new Date(),
         },
       });
