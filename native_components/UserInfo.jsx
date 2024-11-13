@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
+import { auth } from "../config/firebase";
+
 function UserInfoForm() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -14,9 +16,23 @@ function UserInfoForm() {
 
   const handleSubmit = () => {
     // 회원가입 로직 구현
-    console.log({ name, email, password, passwordConfirm, phoneNumber, verificationCode });
-    Alert.alert('회원가입 되었습니다');
-    navigation.navigate('Main');
+    const okFn = (info) => {
+      callFirestore.addData({
+        collection: "users",
+        data: {
+          uid: info.uid,
+          name: info.name,
+          email: "cskim@gmail.com",
+          createdAt: new Date(),
+        },
+      });
+
+      Alert.alert("알림", '회원가입이 완료되었습니다.', [
+        { text: '확인', onPress: () => {navigation.navigate('Main');} },
+      ]);
+    }
+
+    auth.createUser({name, email, password}, okFn);
   };
 
   const handleVerificationClick = () => {

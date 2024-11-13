@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Button, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
+import { auth } from "../config/firebase";
+
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -9,7 +11,7 @@ function LoginPage() {
 
   const handleLogin = () => {
     // 로그인 로직 구현
-    navigation.navigate('Main'); // 홈 페이지로 리다이렉트
+    auth.signIn(email, password, ()=>{navigation.navigate('Main');});
   };
 
   const handleSignupClick = () => {
