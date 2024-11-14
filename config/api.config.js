@@ -14,13 +14,12 @@ const getDataAll = async o => {
 
 const getDataByID = async ({ collectionName, ID}) => {
   try {
-    // Firestore 쿼리: ID와 월(YYYY-MM)을 기준으로 데이터 필터링
     const q = query(
       collection(db, collectionName),
-      where("ID", "==", ID)
+      where("ID", "==", ID)//조건: UID
     );
 
-    const querySnapshot = await getDocs(q);
+    const querySnapshot = await getDocs(q); //조건으로 필터링된 데이터들
     const results = [];
 
     querySnapshot.forEach((doc) => {
@@ -55,7 +54,7 @@ const getDataByDoc = async ({ collectionName, ID, date }) => {
   }
 };
 
-const getDataByMonth = async ({ collectionName, ID, year, month }) => {
+const getDataByMonth = async ({ collectionName, ID, year, month }) => { //특정 년도와 월을 입력해 해당 시간대의 데이터들을 리턴
   try {
      // 지정한 년도와 월을 사용하여 해당 월의 시작일과 종료일 Timestamp 생성
      const startDate = new Date(Number(year), Number(month) - 1, 1); // 해당 월의 1일

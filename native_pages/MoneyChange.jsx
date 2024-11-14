@@ -8,13 +8,13 @@ import { format } from 'date-fns';
 const MoneyChange = () => {
   const route = useRoute();
   const todayDate = format(new Date(), 'yyyy-MM-dd');// 오늘 날짜
-  const { selectedDate, newData } = route.params || {};
-  const selectedID = "Jeeny doe";
-  const [data_list, setDataList] = useState([]);
+  const { selectedDate, newData } = route.params || {};// CustomCalendar에서 선택한 날짜를 전달
+  const selectedID = "Jeeny doe"; //로그인 된 UID 임시 하드코딩
+  const [data_list, setDataList] = useState([]); //선택한 날짜를 기반으로 검색하여 지출,수익 내역 데이터를 저장
 
   const effectiveDate = selectedDate || todayDate;// 'selectedDate'가 없다면 오늘 날짜로 설정
 
-  const plusDummy = {ID:selectedID, date:effectiveDate, amount:'', catecory:'food',content:'',type:1,}
+  const plusDummy = {ID:selectedID, date:effectiveDate, amount:'', catecory:'food',content:'',type:1,} //plus버튼을 눌렀을 시 넘길 임시데이터
 
   useEffect(() => {
     if (newData) {
@@ -24,8 +24,8 @@ const MoneyChange = () => {
       try {
         const results = await callFirestore.getDataByDoc({
           collectionName: "moneyChange", // Firebase 컬렉션 이름
-          ID: selectedID,
-          date: effectiveDate,
+          ID: selectedID, //조건1:UID
+          date: effectiveDate, //조건2:선택된 날짜
         });
         setDataList(results); // data_list에 가져온 데이터 저장
         //console.log(results);
@@ -35,7 +35,7 @@ const MoneyChange = () => {
     };
 
     fetchData();
-  }, [selectedDate,newData]);
+  }, [selectedDate,newData]);//수정, 추가, 삭제를 통해 변경된 값이 전달되면 적용
 
   return (
     <View style={styles.container}>
