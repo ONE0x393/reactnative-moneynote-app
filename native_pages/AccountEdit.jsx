@@ -1,93 +1,240 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, Picker } from 'react-native';
-import CircleChart from '../native_components/CircleChart';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+import { useRoute, useNavigation } from '@react-navigation/native';
+import { Timestamp } from 'firebase/firestore';
 
-const PayChart = () => {
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
-  const [month] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
-  const [in_output] = useState(['소비', '수익']);
-  const [category, setCategory] = useState([]);
-  const [incomeData, setIncomeData] = useState([]);
-  const [outputData, setOutputData] = useState([]);
+function AccountEdit() {
+  const route = useRoute();
+  const navigation = useNavigation();
+  const { del_positive = 0, chosenID = "Jeeny doe", item, bank: initialBank = '', account: initialAccount = '' } = route.params || {};
 
+  const [accountId, setID] = useState(chosenID);
+  const [type, setType] = useState('income'); // 'income' or 'expense'
+  const [amount, setAmount] = useState('');
+  const [account, setAccount] = useState(initialAccount);
+  const [bank, setBank] = useState(initialBank);
+  const [balance, setBalance] = useState(0); // 잔액 상태 추가
+
+  let selectMethod = "";
+
+  // Firestore에서 데이터 가져오기
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const results = await callFirestore.getDataByMonth({
-          collectionName: 'moneyChange',
-          ID: 'Jeeny doe', // 로그인된 사용자 ID (동적 변경 필요)
-          year: new Date().getFullYear(),
-          month: selectedMonth,
-        });
-
-        // 카테고리별 데이터 계산
-        const categoryTotals = {};
-        results.forEach((item) => {
-          const { category, type, amount } = item;
-          if (!categoryTotals[category]) {
-            categoryTotals[category] = { income: 0, expense: 0 };
-          }
-          if (type === 1) {
-            categoryTotals[category].income += amount;
+    const fetchAccountData = async () => {
+      if (accountId) {
+        try {
+          // Firestore에서 데이터를 가져오기 위해 callFirestore 사용
+          const results = await callFirestore.getDataByID({
+            collectionName: 'accounts',
+            ID: accountId
+          });
+          
+          if (results && results.length > 0) {
+            const data = results[0];
+            setType(data.type === 1 ? 'income' : 'expense');
+            setAmount(data.amount.toString());
+            setAccount(data.account || initialAccount);
+            setBank(data.bank || initialBank);
           } else {
-            categoryTotals[category].expense += amount;
+            console.error(`No such document found in the accounts collection for accountId: ${accountId}`);
           }
-        });
-
-        // 카테고리, 수입 및 지출 데이터를 퍼센트로 변환
-        const categories = Object.keys(categoryTotals);
-        const incomeValues = categories.map((cat) => categoryTotals[cat].income);
-        const outputValues = categories.map((cat) => categoryTotals[cat].expense);
-        const totalIncome = incomeValues.reduce((acc, val) => acc + val, 0);
-        const totalExpense = outputValues.reduce((acc, val) => acc + val, 0);
-
-        setCategory(categories);
-        setIncomeData(incomeValues.map((val) => ((val / totalIncome) * 100).toFixed(2)));
-        setOutputData(outputValues.map((val) => ((val / totalExpense) * 100).toFixed(2)));
-      } catch (error) {
-        console.error('Error fetching data:', error);
+        } catch (error) {
+          console.error('Error fetching document: ', error);
+        }
       }
     };
 
-    fetchData();
-  }, [selectedMonth]);
+    fetchAccountData();
+  }, [accountId]);
+
+  const calculateBalance = async () => {
+    try {
+      // 수입 및 지출 데이터를 가져오기 위해 callFirestore 사용
+      const results = await callFirestore.getDataAll({
+        collection: 'cards',
+      });
+
+      let incomeTotal = 0;
+      let expenseTotal = 0;
+
+      results.data.forEach((data) => {
+        if (data.type === 1) {
+          incomeTotal += data.amount; // 수입 합산
+        } else if (data.type === 0) {
+          expenseTotal += data.amount; // 지출 합산
+        }
+      });
+
+      return incomeTotal - expenseTotal; // 잔액 반환
+    } catch (error) {
+      console.error('Error calculating balance:', error);
+      return 0;
+    }
+  };
+
+  const handleSubmit = async () => {
+    const formattedType = type === 'income' ? 1 : 0;
+    const data = {
+      type: formattedType,
+      amount: Number(amount),
+      account,
+      bank,
+    };
+  
+    try {
+      let firestorePromise;
+      if (selectMethod === "Add") {
+        firestorePromise = callFirestore.addData({
+          collection: 'cards',
+          data: data,
+        });
+      } 
+      else if (selectMethod === "Modify") {
+        firestorePromise = callFirestore.updateDatabyDoc({
+          collectionName: "cards",
+          ID: accountId,
+          account: account,
+          amount: amount,
+          bank: bank,
+        });
+        data.ID = "";
+      } 
+      else if (selectMethod === "Del") {
+        firestorePromise = callFirestore.deleteDatabyDoc({
+          collectionName: "cards",
+          ID: accountId,
+          account: account,
+          amount: amount,
+          bank: bank,
+        });
+        data.ID = "";
+      }
+  
+      // Firestore 작업이 완료된 후
+      Promise.resolve(firestorePromise).then(async () => {
+        const updatedBalance = await calculateBalance();
+        setBalance(updatedBalance);
+
+        navigation.navigate('AccountList', {
+          newData: data,  
+        });
+      }).catch((error) => {
+        console.error('Error during Firestore operation: ', error);
+      });
+    } catch (error) {
+      console.error('Error submitting data: ', error);
+    }
+  };
+  
+  const handleAdd = () => {
+    selectMethod = "Add";
+    handleSubmit();
+  };
+  
+  const handleModify = () => {
+    selectMethod = "Modify";
+    handleSubmit();
+  };
+  
+  const handleDel = () => {
+    selectMethod = "Del";
+    handleSubmit();
+  };
 
   return (
-    <View style={styles.page}>
-      <View style={styles.selectorContainer}>
+    <View style={styles.container}>
+      <Text style={styles.title}>
+        {accountId ? '계좌 수정' : '계좌 추가'}
+      </Text>
+
+      <View style={styles.formGroup}>
+        <Text style={styles.label}>유형</Text>
         <Picker
-          selectedValue={selectedMonth}
-          onValueChange={(itemValue) => setSelectedMonth(itemValue)}
-          style={styles.picker}
+          selectedValue={type}
+          onValueChange={(itemValue) => setType(itemValue)}
+          style={styles.input}
         >
-          {month.map((m) => (
-            <Picker.Item key={m} label={`${m}월`} value={m} />
-          ))}
+          <Picker.Item label="수입" value="income" />
+          <Picker.Item label="지출" value="expense" />
         </Picker>
       </View>
-      <ScrollView contentContainerStyle={styles.page}>
-        <CircleChart month={selectedMonth} in_output={in_output[0]} category={category} volume={outputData} />
-        <CircleChart month={selectedMonth} in_output={in_output[1]} category={category} volume={incomeData} />
-      </ScrollView>
+
+      <View style={styles.formGroup}>
+        <Text style={styles.label}>금액</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType="numeric"
+          value={amount}
+          onChangeText={setAmount}
+          placeholder="금액 입력"
+        />
+      </View>
+
+      <View style={styles.formGroup}>
+        <Text style={styles.label}>계좌/카드</Text>
+        <TextInput
+          style={styles.input}
+          value={account}
+          onChangeText={setAccount}
+          placeholder="계좌 또는 카드 이름 입력"
+        />
+      </View>
+
+      <View style={styles.formGroup}>
+        <Text style={styles.label}>은행</Text>
+        <TextInput
+          style={styles.input}
+          value={bank}
+          onChangeText={setBank}
+          placeholder="은행 이름 입력"
+        />
+      </View>
+
+      {del_positive !== 1 && (
+        <View style={styles.formGroup}>
+          <Button title="저장" onPress={handleAdd} />
+        </View>
+      )}
+
+      {del_positive === 1 && (
+        <View style={styles.formGroup}>
+          <Button title="수정" onPress={handleModify} />
+        </View>
+      )}
+
+      {del_positive === 1 && (
+        <View style={styles.formGroup}>
+          <Button title="삭제" onPress={handleDel} />
+        </View>
+      )}
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  page: {
+  container: {
     flex: 1,
-    backgroundColor: '#fff',
     padding: 20,
+    backgroundColor: '#f9f9f9',
   },
-  selectorContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+  title: {
+    fontSize: 24,
+    textAlign: 'center',
     marginBottom: 20,
   },
-  picker: {
-    width: 150,
+  formGroup: {
     marginBottom: 20,
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 4,
+    padding: 10,
   },
 });
 
-export default PayChart;
+export default AccountEdit;
