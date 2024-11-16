@@ -7,11 +7,11 @@ const screenWidth = Dimensions.get('window').width;
 const CircleChart = ({ month, in_output, category, volume }) => {
   // Pie chart data preparation
   const data = category.map((cat, index) => ({
-    name: `% : ${cat}`,
-    population: volume[index],
+    name: `${cat} `,
+    population: isNaN(parseFloat(volume[index])) ? 0 : parseFloat(volume[index]),
     color: ['#EB6927', '#2D8CFF', '#8DB600', '#FFCC66', '#990033'][index % 5],
     legendFontColor: '#7F7F7F',
-    legendFontSize: 15,
+    legendFontSize: 10,
   }));
 
   return (
@@ -22,13 +22,16 @@ const CircleChart = ({ month, in_output, category, volume }) => {
         width={screenWidth - 40}  // Padding to avoid overflow
         height={220}
         chartConfig={{
-          color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+          color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
           labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+          propsForLabels: {
+            fontWeight: 'bold'
+          },
         }}
         accessor="population"
         backgroundColor="transparent"
-        paddingLeft="15"
-        absolute
+        paddingLeft="5"
+        hasLegend={true}
         style={styles.chart}
       />
     </View>
@@ -49,7 +52,7 @@ const styles = StyleSheet.create({
   },
   chart: {
     borderRadius: 16,
-    fontWeight:'bold',
+    fontWeight: 'bold',
   },
 });
 
