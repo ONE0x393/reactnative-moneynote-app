@@ -12,6 +12,25 @@ const getDataAll = async o => {
   return retData;
 }
 
+const getUserInfoByUID = async ({ UID }) => {
+  try {
+    const q = query(
+      collection(db, "users"),
+      where("uid", "==", UID)
+    );
+
+    const querySnapshot = await getDocs(q);
+    const results = [];
+
+    querySnapshot.forEach((doc) => { results.push(doc.data()); });
+
+    return results;
+  } catch (error) {
+    console.error("Error fetching documents:", error);
+    throw error;
+  }
+};
+
 const getDataByID = async ({ collectionName, ID}) => {
   try {
     const q = query(
@@ -203,6 +222,7 @@ global.callFirestore = {
   getDataByDoc,
   getDataByMonth,
   getData,
+  getUserInfoByUID,
 
   addData,
   setData,
