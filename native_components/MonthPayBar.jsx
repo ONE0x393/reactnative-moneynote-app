@@ -1,19 +1,25 @@
 import React from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import { View, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import Svg, { Rect, Text, G } from 'react-native-svg';
 
 const MonthPayBar = ({ monthlyExpense, monthlyIncome }) => {
   const screenWidth = Dimensions.get('window').width;
+  const visibleMonths = 3; // 한 번에 보여줄 월의 개수
   const chartHeight = 250;
-  const chartWidth = screenWidth - 40; // 여백 포함
+  const chartWidth = screenWidth * (12 / visibleMonths); // 전체 그래프 너비
   const barWidth = chartWidth / (12 * 3); // 막대 너비 (간격 포함)
   const maxValue = Math.max(...monthlyExpense, ...monthlyIncome, 1); // 최소값을 1로 설정
-  const scale = (chartHeight / maxValue)*0.9; // 데이터 값을 그래프 높이에 맞추는 스케일
+  const barMaxHeight = chartHeight * 0.9; // 막대의 최대 높이를 배경의 90%로 설정
+  const scale = barMaxHeight / maxValue; // 데이터 값을 그래프 높이에 맞추는 스케일
   const paddingTop = 20; // 텍스트 표시를 위한 상단 여백
   const offset = barWidth / 2; // 왼쪽으로 조금 이동할 만큼 오프셋 추가
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={true}
+      contentContainerStyle={styles.scrollContainer}
+    >
       <Svg width={chartWidth} height={chartHeight + paddingTop + 40}>
         {/* 그래프 배경 색 추가 */}
         <Rect
@@ -29,7 +35,7 @@ const MonthPayBar = ({ monthlyExpense, monthlyIncome }) => {
           const expense = exp || 0; // 지출 값이 없으면 0으로 대체
           const income = monthlyIncome[index] || 0; // 수입 값이 없으면 0으로 대체
           const x = index * (barWidth * 3) + offset; // 각 막대의 X 좌표에 오프셋 추가
-          const expenseHeight = (expense * scale); // 지출 막대의 높이
+          const expenseHeight = expense * scale; // 지출 막대의 높이
           const incomeHeight = income * scale; // 수입 막대의 높이
 
           // 텍스트의 중간 부분을 맞추기 위한 X 좌표 계산
@@ -77,7 +83,7 @@ const MonthPayBar = ({ monthlyExpense, monthlyIncome }) => {
               </Text>
               {/* 라벨 (월 표시) */}
               <Text
-                x={labelX-4} // 라벨의 중앙이 맞춰짐
+                x={labelX - 4} // 라벨의 중앙이 맞춰짐
                 y={chartHeight + paddingTop + 15}
                 fontSize={10}
                 fill="black"
@@ -90,11 +96,14 @@ const MonthPayBar = ({ monthlyExpense, monthlyIncome }) => {
           );
         })}
       </Svg>
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    alignItems: 'center',
+  },
   container: {
     alignItems: 'center',
     justifyContent: 'center',
