@@ -5,10 +5,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { auth } from "../config/firebase";
 
-function LoginPage() {
+function LoginPage({ route, navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigation = useNavigation();
+  
+  // initialParams에서 전달된 값을 초기 상태로 설정
+  const { isLogin: initialLogin } = route.params;
+  const [isLogin, setIsLogin] = useState(initialLogin);
 
   const handleLogin = () => {
     // 로그인 로직 구현
@@ -16,11 +19,16 @@ function LoginPage() {
       try {
         console.log("INSERT UID: ", info.uid);
         await AsyncStorage.setItem("UID", info.uid);
+
+        setIsLogin(true);
+        await navigation.setParams({ isLogin: true });
+
         navigation.navigate("Main");
       } catch (e) {
         console.error(e);
       }
     }
+
     auth.signIn(email, password, okFn);
   };
 
