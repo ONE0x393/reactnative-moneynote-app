@@ -1,28 +1,44 @@
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const MyPage = () => {
+  const [userName, setUserName] = useState(null);
+  const [userEmail, setUserEmail] = useState(null);
+
   const navigation = useNavigation();
   const onLogout = async () => {
-    // 로그아웃
     await AsyncStorage.removeItem("UID");
     navigation.navigate("Login");
   }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const UID = await AsyncStorage.getItem("UID");
+      const [userInfo] = await callFirestore.getUserInfoByUID({ UID: UID });
+
+      setUserName(userInfo.name);
+      setUserEmail(userInfo.email);
+
+      console.log(userInfo);
+    }
+
+    fetchData();
+  }, []);
 
   return (
     <View style={styles.container}>
       <View style={styles.infoBox}>
         <View style={styles.infoTop}>
-          <Text style={styles.nameText}>님 환영합니다</Text>
+          <Text style={styles.nameText}>{ userName }님 환영합니다</Text>
 
           <TouchableOpacity style={styles.btnLogout} onPress={onLogout} activeOpacity={0.8}>
             <Text style={{ fontSize: 12, color: "white" }} >로그아웃</Text>
           </TouchableOpacity>
-
         </View>
-        <Text>이메일</Text>
+        
+        <Text>{ userEmail }</Text>
       </View>
 
       <View>
@@ -56,7 +72,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   infoTop: {
-    marginBottom: 20,
+    marginBottom: 10,
 
     flexDirection: 'row',
     justifyContent: 'space-between',
