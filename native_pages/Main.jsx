@@ -80,7 +80,7 @@ const Main = () => {
       <CustomCalendar calendarData={calendarData} />
       {/* 특정날짜의 총지출,수익 금액에 대한 정보인 calendarData를 전달하여 출력 */}
       {/* 12개월 막대 그래프 컴포넌트 */}
-      <MonthPayBar data={monthlyExpense} />
+      <MonthPayBar monthlyExpense={monthlyExpense} monthlyIncome={monthlyIncome}/>
       
     </ScrollView>
   );
