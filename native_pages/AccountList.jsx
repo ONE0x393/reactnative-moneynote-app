@@ -1,54 +1,114 @@
-import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, StyleSheet,  TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import MoneyChangeButton from '../native_components/MoneyChangeButton';
-import PlusButton from '../native_components/PlusButton';
-import AccountButton from '../native_components/AccountButton';
+import AccountPlusButton from '../native_components/AccountPlusButton';
 
-const AccountList = () => {
+function AccountList() {
   const navigation = useNavigation();
+  const [groupedAccounts, setGroupedAccounts] = useState({});
+  const selectedID = 'Jeeny doe'; // 로그인 된 UID 임시 하드코딩 (동적인 사용자 ID로 대체 필요)
 
-  const data_list = [
-    { account: "빨강이 좋겠어(롯데카드)", content: "집주인 월세", amount: "300000" },
-    { account: "신한카드", content: "알바 수당", amount: "250000" },
-    { account: "빨강이 좋겠어(롯데카드)", content: "집주인 월세", amount: "300000" },
-    { account: "신한카드", content: "알바 수당", amount: "250000" },
-    { account: "빨강이 좋겠어(롯데카드)", content: "집주인 월세", amount: "300000" },
-    { account: "신한카드", content: "알바 수당", amount: "250000" },
-    { account: "빨강이 좋겠어(롯데카드)", content: "집주인 월세", amount: "300000" },
-    { account: "신한카드", content: "알바 수당", amount: "250000" },
-    { account: "빨강이 좋겠어(롯데카드)", content: "집주인 월세", amount: "300000" },
-    { account: "신한카드", content: "알바 수당", amount: "55550000" },
-  ];
+  useEffect(() => {
+    const fetchAccounts = async () => {
+      try {
+        // callFirestore를 사용하여 데이터를 가져오기
+        const results = await callFirestore.getDataAll({
+          collection: 'cards',
+        });
+        const accountsData = results.data;
+        calculateBalanceByBankAndAccount(accountsData);
+      } catch (error) {
+        console.error('계좌 데이터를 가져오는 중 오류 발생: ', error);
+      }
+    };
 
-  const handlePlusButtonPress = () => {
-    navigation.navigate('AccountEdit'); // AccountEdit 페이지로 이동
+    fetchAccounts();
+    const unsubscribe = navigation.addListener('focus', () => {
+      fetchAccounts();
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const calculateBalanceByBankAndAccount = (accountsData) => {
+    const groupedData = accountsData.reduce((acc, account) => {
+      const bankName = account.bank || '알 수 없는 은행';
+      const accountName = account.account || '알 수 없는 계좌';
+      const key = `${bankName}-${accountName}`;
+
+      if (!acc[key]) {
+        acc[key] = {
+          bank: bankName,
+          account: accountName,
+          income: 0,
+          expense: 0,
+          balance: 0,
+          transactions: [],
+        };
+      }
+
+      if (account.type === 1) { // 수입일 경우
+        acc[key].income += account.amount;
+        acc[key].balance += account.amount;
+      } else if (account.type === 0) { // 지출일 경우
+        acc[key].expense += account.amount;
+        acc[key].balance -= account.amount;
+      }
+
+      acc[key].transactions.push(account);
+
+      return acc;
+    }, {});
+
+    setGroupedAccounts(groupedData);
+  };
+
+  const renderBankGroup = ({ item }) => {
+    const accountKey = item;
+    const accountData = groupedAccounts[accountKey];
+
+    return (
+      <TouchableOpacity
+        style={styles.bankGroup}
+        onPress={() => navigation.navigate('AccountDetail', { accountData })}
+      >
+        <Text style={styles.bankName}>{accountData.bank} - {accountData.account}</Text>
+        <Text style={styles.accountText}>잔액: {Number(accountData.balance).toLocaleString()}원</Text>
+      </TouchableOpacity>
+    )
   };
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {data_list.slice().reverse().map((item, index) => (
-          <AccountButton
-            key={index}
-            account={item.account}
-            content={item.content}
-            amount={item.amount}
-          />
-        ))}
-      </ScrollView>
-      <PlusButton onPress={handlePlusButtonPress} /> {/* PlusButton에 onPress 추가 */}
+      <FlatList
+        data={Object.keys(groupedAccounts)}
+        renderItem={renderBankGroup}
+        keyExtractor={(item) => item}
+      />
+      <AccountPlusButton onPress={() => navigation.navigate('AccountEdit')} />
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 20,
+    backgroundColor: '#f9f9f9',
   },
-  scrollContainer: {
-    alignItems: 'center',
-    paddingVertical: 10,
+  bankGroup: {
+    marginBottom: 20,
+    padding: 15,
+    backgroundColor: '#e8f4f8',
+    borderRadius: 8,
+  },
+  bankName: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  accountText: {
+    fontSize: 16,
+    marginBottom: 5,
   },
 });
 

@@ -15,6 +15,7 @@ import Terms from './native_pages/Terms';
 import Signup from './native_pages/Signup';
 import AccountForm from './native_pages/AccountForm';
 import AccountEdit from './native_pages/AccountEdit';
+import AccountDetail from './native_pages/AccountDetail';
 
 
 const Stack = createStackNavigator();
@@ -39,6 +40,7 @@ function App() {
             <Stack.Screen name="Signup" component={Signup} />
             <Stack.Screen name="AccountForm" component={AccountForm} />{/* 지출,수익 수정 및 등록 */}
             <Stack.Screen name="AccountEdit" component={AccountEdit} />
+            <Stack.Screen name="AccountDetail" component={AccountDetail} />
           </Stack.Navigator>
         </View>
         <View style={styles.menubarContainer}>
