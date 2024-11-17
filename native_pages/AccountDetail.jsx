@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 
@@ -7,8 +7,17 @@ function AccountDetail() {
   const navigation = useNavigation();
   const { accountData } = route.params;
 
+  useEffect(() => {
+    console.log('Account Data:', accountData);
+    console.log('수익 (in_amount):', accountData.in_amount);
+    console.log('지출 (ex_amount):', accountData.ex_amount);
+    console.log('계산된 잔액 (balance):', balance);
+  }, [accountData]);
+  
+  const balance = (Number(accountData.in_amount) || 0) - (Number(accountData.ex_amount) || 0);
+
   const handleEdit = () => {
-    navigation.navigate('AccountEdit', { bank: accountData.bank, account: accountData.account });
+    navigation.navigate('AccountList', { bank: accountData.bank, account: accountData.account });
   };
 
   return (
@@ -16,22 +25,22 @@ function AccountDetail() {
       <Text style={styles.title}>{accountData.bank} - {accountData.account}</Text>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>수입</Text>
-        <Text style={styles.sectionValue}>{Number(accountData.income).toLocaleString()}원</Text>
+        <Text style={styles.sectionTitle}>은행</Text>
+        <Text style={styles.sectionValue}>{accountData.bank}</Text>
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>지출</Text>
-        <Text style={styles.sectionValue}>{Number(accountData.expense).toLocaleString()}원</Text>
+        <Text style={styles.sectionTitle}>계좌번호</Text>
+        <Text style={styles.sectionValue}>{accountData.account}</Text>
       </View>
 
       <View style={styles.balanceSection}>
         <Text style={styles.balanceTitle}>잔액</Text>
-        <Text style={styles.balanceValue}>{Number(accountData.balance).toLocaleString()}원</Text>
+        <Text style={styles.balanceValue}>{balance.toLocaleString()}원</Text>
       </View>
 
       <View style={styles.buttonContainer}>
-        <Button title="수정" onPress={handleEdit} />
+        <Button title="확인" onPress={handleEdit} />
       </View>
     </View>
   );

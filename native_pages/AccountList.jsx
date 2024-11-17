@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet,  TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AccountPlusButton from '../native_components/AccountPlusButton';
 
@@ -39,20 +39,16 @@ function AccountList() {
         acc[key] = {
           bank: bankName,
           account: accountName,
-          income: 0,
-          expense: 0,
+          in_amount: 0,
+          ex_amount: 0,
           balance: 0,
           transactions: [],
         };
       }
 
-      if (account.type === 1) { // 수입일 경우
-        acc[key].income += account.amount;
-        acc[key].balance += account.amount;
-      } else if (account.type === 0) { // 지출일 경우
-        acc[key].expense += account.amount;
-        acc[key].balance -= account.amount;
-      }
+      acc[key].in_amount += account.in_amount || 0;
+      acc[key].ex_amount += account.ex_amount || 0;
+      acc[key].balance = acc[key].in_amount - acc[key].ex_amount;
 
       acc[key].transactions.push(account);
 
@@ -74,7 +70,7 @@ function AccountList() {
         <Text style={styles.bankName}>{accountData.bank} - {accountData.account}</Text>
         <Text style={styles.accountText}>잔액: {Number(accountData.balance).toLocaleString()}원</Text>
       </TouchableOpacity>
-    )
+    );
   };
 
   return (
