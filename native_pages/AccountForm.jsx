@@ -18,8 +18,6 @@ function AccountForm() {
   const [tamount, setAmount] = useState(item.amount);
   const [category, setCategory] = useState((item.category===undefined)?"food":item.category);
   const [content, setContent] = useState(item.content);
-  const [bank, setBank] = useState('');
-  const [banks, setBanks] = useState([]);
   const [bankAccount, setBankAccount] = useState('');
   const [bankAccounts, setBankAccounts] = useState([]);
   const navigation = useNavigation();
@@ -65,7 +63,7 @@ function AccountForm() {
     else if(ttype ==='expense')type=0
     const date = format(tdate, 'yyyy-MM-dd');
     const amount = Number(tamount);
-    
+    const [bank, account] = bankAccount.split(' - ');
 
     const data = {
       type,
