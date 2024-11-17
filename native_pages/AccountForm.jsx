@@ -96,6 +96,7 @@ function AccountForm() {
           collection: 'moneyChange',  // 컬렉션 이름
           data: data,                 // 저장할 데이터
         });
+        callFirestore.updateCardbymoney({collectionName:'cards', ID:data.ID, bank:data.bank, account:data.account, amount:data.amount, type:data.type});
          updateCardAmount(bank, account, type, amount);
       }
       else if(selectMethod === "Modify"){
@@ -114,6 +115,14 @@ function AccountForm() {
           bank: bank,
           account: account,
         });
+
+        callFirestore.updateCardbymoney({
+           collectionName:'cards',
+           ID:data.ID, 
+           bank:data.bank,
+           account:data.account,
+           amount:(tamount!==item.amount)?(tamount-item.amount):0,
+           type:data.type});
         data.ID="";
       }
       else if(selectMethod === "Del"){
@@ -125,6 +134,7 @@ function AccountForm() {
           category: category,
           content: content,
         });
+        callFirestore.updateCardbymoney({collectionName:'cards', ID:data.ID, bank:data.bank, account:data.account, amount:data.amount*(-1), type:data.type});
         data.ID="";
       }
       // 저장 후 화면을 이전 페이지로 돌아가기
