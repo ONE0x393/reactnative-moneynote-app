@@ -180,6 +180,43 @@ const updateDatabyDoc = async ({collectionName,searchID, searchdate, searchcateg
   } catch (e) { console.error("Error updating document: ", e); }
 }
 
+const updateCardbymoney = async ({collectionName, ID, bank, account, amount, type}) => {
+  try {
+    const q = query( //기존 데이터로 검색
+      collection(db, collectionName),
+      where("ID","==",ID),
+      where("bank","==",bank),
+      where("account","==",account),
+    )
+    
+    const querySnapshot = await getDocs(q);
+    if(!querySnapshot.empty){ //새 데이터로 업데이트
+      querySnapshot.forEach(async (docSnap)=>{
+        const docRef = doc(db, collectionName, docSnap.id);
+        const docData = docSnap.data();
+        let updateData = {};
+        if (type === 0) {
+          //지출이면 ex_amount 필드에 amount 더하기
+          updateData = {
+            ex_amount: (docData.ex_amount || 0) + amount,
+          };
+        } else if (type === 1) {
+          //수익이면 in_amount 필드에 amount 더하기
+          updateData = {
+            in_amount: (docData.in_amount || 0) + amount,
+          };
+        }
+
+        await updateDoc(docRef,updateData);
+        console.log("Document successfully updated!");
+      });
+    }
+    else if (querySnapshot.empty) {
+      console.log('No matching documents found.');
+    }
+  } catch (e) { console.error("Error updating document: ", e); }
+}
+
 
 /* *** DELETE *** */
 
@@ -229,6 +266,7 @@ global.callFirestore = {
 
   updateData,
   updateDatabyDoc,
+  updateCardbymoney,
 
   deleteData,
   deleteDatabyDoc,
