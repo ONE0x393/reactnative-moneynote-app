@@ -7,13 +7,27 @@ function AccountDetail() {
   const navigation = useNavigation();
   const { accountData } = route.params;
 
+  const [userID, setUserID] = useState('Jeeny doe');
+
   useEffect(() => {
-    console.log('Account Data:', accountData);
-    console.log('수익 (in_amount):', accountData.in_amount);
-    console.log('지출 (ex_amount):', accountData.ex_amount);
-    console.log('계산된 잔액 (balance):', balance);
+    const fetchUserID = async () => {
+      try {
+        const results = await callFirestore.getDataByID({
+          collectionName: 'cards',
+          ID: `${accountData.bank}-${accountData.account}`
+        });
+
+        if (results && results.length > 0) {
+          setUserID(results[0].ID || '알 수 없는 사용자');
+        }
+      } catch (error) {
+        console.error('Error fetching user ID:', error);
+      }
+    };
+
+    fetchUserID();
   }, [accountData]);
-  
+
   const balance = (Number(accountData.in_amount) || 0) - (Number(accountData.ex_amount) || 0);
 
   const handleEdit = () => {
@@ -22,7 +36,7 @@ function AccountDetail() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{accountData.bank} - {accountData.account}</Text>
+      <Text style={styles.title}>{userID} 님의 계좌</Text>
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>은행</Text>

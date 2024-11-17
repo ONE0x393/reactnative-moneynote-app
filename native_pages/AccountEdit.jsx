@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import { Timestamp } from 'firebase/firestore';
 
 function AccountEdit() {
   const route = useRoute();
