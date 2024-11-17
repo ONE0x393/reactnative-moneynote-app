@@ -18,6 +18,10 @@ function AccountForm() {
   const [tamount, setAmount] = useState(item.amount);
   const [category, setCategory] = useState((item.category===undefined)?"food":item.category);
   const [content, setContent] = useState(item.content);
+  const [bank, setBank] = useState('');
+  const [banks, setBanks] = useState([]);
+  const [bankAccount, setBankAccount] = useState('');
+  const [bankAccounts, setBankAccounts] = useState([]);
   const navigation = useNavigation();
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [ID, setID] = useState(chosenID);
@@ -39,7 +43,22 @@ function AccountForm() {
       const newDate = new Date(Number(date.slice(0, 4)), Number(date.slice(5, 7))-1, Number(date.slice(8)), currentTime.getHours(), currentTime.getMinutes(), currentTime.getSeconds());
       setRealTime(newDate);
     }
+    const fetchBankData = async () => {
+      try {
+        const results = await callFirestore.getDataAll({
+          collection: 'cards',
+        });
+        const bankAccountNames = [...new Set(results.data.map((item) => `${item.bank} - ${item.account}`))];
+        setBankAccounts(bankAccountNames);
+      } catch (error) {
+        console.error('Error fetching bank data:', error);
+      }
+    };
+
+    fetchBankData();
   },[])
+
+  
 
   const handleSubmit = () => {
     if(ttype ==='income') type = 1
@@ -55,6 +74,8 @@ function AccountForm() {
       category,
       content,
       ID,
+      bank,
+      account,
       realTime,
     };
 
@@ -79,6 +100,8 @@ function AccountForm() {
           amount: amount,
           category: category,
           content: content,
+          bank: bank,
+          account: account,
         });
         data.ID="";
       }
@@ -137,6 +160,19 @@ function AccountForm() {
         >
           <Picker.Item label="수입" value="income" />
           <Picker.Item label="지출" value="expense" />
+        </Picker>
+      </View>
+
+      <View style={styles.formGroup}>
+        <Text style={styles.label}>은행 및 계좌</Text>
+        <Picker
+          selectedValue={bankAccount}
+          onValueChange={(itemValue) => setBankAccount(itemValue)}
+          style={styles.input}
+        >
+          {bankAccounts.map((bankAccountName) => (
+            <Picker.Item key={bankAccountName} label={bankAccountName} value={bankAccountName} />
+          ))}
         </Picker>
       </View>
 

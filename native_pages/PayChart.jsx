@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, Text } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import CircleChart from '../native_components/CircleChart';
 
@@ -69,8 +69,14 @@ const PayChart = () => {
         </Picker>
       </View>
       <ScrollView contentContainerStyle={styles.page}>
-        <CircleChart month={selectedMonth} in_output={in_output[0]} category={category} volume={outputData} />
-        <CircleChart month={selectedMonth} in_output={in_output[1]} category={category} volume={incomeData} />
+        {category.length === 0 ? (
+          <Text style={styles.noDataText}>데이터가 없습니다.</Text>
+        ) : (
+          <>
+            <CircleChart month={selectedMonth} in_output={in_output[0]} category={category} volume={outputData} />
+            <CircleChart month={selectedMonth} in_output={in_output[1]} category={category} volume={incomeData} />
+          </>
+        )}
       </ScrollView>
     </View>
   );
@@ -93,6 +99,12 @@ const styles = StyleSheet.create({
   },
   pickerItem: {
     height: 150, // 아이템 높이 설정으로 스크롤 시 6~7개만 미리 보기 가능
+  },
+  noDataText: {
+    textAlign: 'center',
+    fontSize: 18,
+    color: '#888',
+    marginTop: 50,
   },
 });
 
