@@ -48,6 +48,10 @@ function AccountForm() {
         });
         const bankAccountNames = [...new Set(results.data.map((item) => `${item.bank} - ${item.account}`))];
         setBankAccounts(bankAccountNames);
+
+        if (item.bank && item.account) {
+          setBankAccount(`${item.bank} - ${item.account}`);
+        }
       } catch (error) {
         console.error('Error fetching bank data:', error);
       }
@@ -63,7 +67,15 @@ function AccountForm() {
     else if(ttype ==='expense')type=0
     const date = format(tdate, 'yyyy-MM-dd');
     const amount = Number(tamount);
+    if (!bankAccount) {
+      console.error('은행 및 계좌를 선택하세요.');
+      return;
+    }
     const [bank, account] = bankAccount.split(' - ');
+    if (!bank || !account || !date || !amount || !category || !content) {
+      console.error('필수 필드가 비어 있습니다.');
+      return;
+    }
 
     const data = {
       type,
@@ -168,6 +180,7 @@ function AccountForm() {
           onValueChange={(itemValue) => setBankAccount(itemValue)}
           style={styles.input}
         >
+          <Picker.Item label="-은행 계좌를 선택해주세요-" value="-은행 계좌를 선택해주세요-" />
           {bankAccounts.map((bankAccountName) => (
             <Picker.Item key={bankAccountName} label={bankAccountName} value={bankAccountName} />
           ))}
