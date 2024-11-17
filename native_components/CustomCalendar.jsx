@@ -85,14 +85,14 @@ const styles = StyleSheet.create({
   },
   dayContainer: {
     padding: 10, // 날짜 컨테이너 안쪽 여백을 늘려서 간격을 넓힘
-    margin: 5, // 날짜 컨테이너 바깥쪽 여백을 추가하여 간격 조절
+    margin: 0, // 날짜 컨테이너 바깥쪽 여백을 추가하여 간격 조절
     alignItems: 'center',
   },
   dateText: {
-    fontSize: 16,
+    fontSize: 15,
   },
   customText: {
-    fontSize: 10,
+    fontSize: 7,
   },
 });
 
