@@ -11,10 +11,12 @@ function AccountEdit() {
 
   const [accountId, setID] = useState(chosenID);
   const [type, setType] = useState('income'); // 'income' or 'expense'
-  const [amount, setAmount] = useState('');
-  const [account, setAccount] = useState(initialAccount);
-  const [bank, setBank] = useState(initialBank);
+  const [inAmount, setInAmount] = useState(0); // 수입 금액
+  const [exAmount, setExAmount] = useState(0); // 지출 금액
+  const [account, setAccount] = useState('');
+  const [bank, setBank] = useState('');
   const [balance, setBalance] = useState(0); // 잔액 상태 추가
+
 
   let selectMethod = "";
 
@@ -25,16 +27,13 @@ function AccountEdit() {
         try {
           // Firestore에서 데이터를 가져오기 위해 callFirestore 사용
           const results = await callFirestore.getDataByID({
-            collectionName: 'accounts',
+            collectionName: 'cards',
             ID: accountId
           });
           
           if (results && results.length > 0) {
             const data = results[0];
             setType(data.type === 1 ? 'income' : 'expense');
-            setAmount(data.amount.toString());
-            setAccount(data.account || initialAccount);
-            setBank(data.bank || initialBank);
           } else {
             console.error(`No such document found in the accounts collection for accountId: ${accountId}`);
           }
@@ -59,9 +58,9 @@ function AccountEdit() {
 
       results.data.forEach((data) => {
         if (data.type === 1) {
-          incomeTotal += data.amount; // 수입 합산
+          incomeTotal += data.in_amount; // 수입 합산
         } else if (data.type === 0) {
-          expenseTotal += data.amount; // 지출 합산
+          expenseTotal += data.ex_amount; // 지출 합산
         }
       });
 
@@ -75,8 +74,9 @@ function AccountEdit() {
   const handleSubmit = async () => {
     const formattedType = type === 'income' ? 1 : 0;
     const data = {
-      type: formattedType,
-      amount: Number(amount),
+      ID: accountId,
+      in_amount: formattedType === 1 ? Number(inAmount) : 0,
+      ex_amount: formattedType === 0 ? Number(exAmount) : 0,
       account,
       bank,
     };
@@ -94,20 +94,20 @@ function AccountEdit() {
           collectionName: "cards",
           ID: accountId,
           account: account,
-          amount: amount,
+          in_amount: data.in_amount,
+          ex_amount: data.ex_amount,
           bank: bank,
         });
-        data.ID = "";
       } 
       else if (selectMethod === "Del") {
         firestorePromise = callFirestore.deleteDatabyDoc({
           collectionName: "cards",
           ID: accountId,
           account: account,
-          amount: amount,
+          in_amount: data.in_amount,
+          ex_amount: data.ex_amount,
           bank: bank,
         });
-        data.ID = "";
       }
   
       // Firestore 작업이 완료된 후
@@ -144,31 +144,8 @@ function AccountEdit() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
-        {accountId ? '계좌 수정' : '계좌 추가'}
+        {accountId ? '계좌 추가' : '계좌 추가'}
       </Text>
-
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>유형</Text>
-        <Picker
-          selectedValue={type}
-          onValueChange={(itemValue) => setType(itemValue)}
-          style={styles.input}
-        >
-          <Picker.Item label="수입" value="income" />
-          <Picker.Item label="지출" value="expense" />
-        </Picker>
-      </View>
-
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>금액</Text>
-        <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          value={amount}
-          onChangeText={setAmount}
-          placeholder="금액 입력"
-        />
-      </View>
 
       <View style={styles.formGroup}>
         <Text style={styles.label}>계좌/카드</Text>

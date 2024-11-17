@@ -96,6 +96,7 @@ function AccountForm() {
           collection: 'moneyChange',  // 컬렉션 이름
           data: data,                 // 저장할 데이터
         });
+         updateCardAmount(bank, account, type, amount);
       }
       else if(selectMethod === "Modify"){
         firestorePromise = callFirestore.updateDatabyDoc({
@@ -138,6 +139,32 @@ function AccountForm() {
       
     } catch (error) {
       console.error("Error submitting data: ", error);
+    }
+  };
+
+  const updateCardAmount = async (bank, account, type, amount) => {
+    try {
+      const query = await callFirestore.getDataByID({
+        collectionName: 'cards',
+        ID: `${bank}-${account}`
+      });
+
+      if (query && query.length > 0) {
+        const cardData = query[0];
+        const updatedData = {
+          ...cardData,
+          in_amount: type === 1 ? cardData.in_amount + amount : cardData.in_amount,
+          ex_amount: type === 0 ? cardData.ex_amount + amount : cardData.ex_amount,
+        };
+
+        await callFirestore.updateDatabyDoc({
+          collectionName: 'cards',
+          ID: `${bank}-${account}`,
+          data: updatedData,
+        });
+      }
+    } catch (error) {
+      console.error('Error updating card amount:', error);
     }
   };
 
