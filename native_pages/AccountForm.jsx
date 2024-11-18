@@ -6,11 +6,12 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { useRoute } from '@react-navigation/native';
 import { format } from 'date-fns';
 import { collection, Timestamp } from 'firebase/firestore';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function AccountForm() {
   const route = useRoute();
   const todayDate = format(new Date(), 'yyyy-MM-dd');// 오늘 날짜
-  const { del_positive = 0, chosenID = "Jeeny doe", item} = route.params || {};
+  const { del_positive = 0, chosenID, item} = route.params || {};
 
   const [ttype, setType] = useState((item.type===0)?'expense':'income');
   let type=0;
@@ -22,13 +23,18 @@ function AccountForm() {
   const [bankAccounts, setBankAccounts] = useState([]);
   const navigation = useNavigation();
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [ID, setID] = useState(chosenID);
+  const [UID, setUID] = useState(chosenID);
   const [realTime, setRealTime] = useState(Timestamp.now());
 
   //const [tempID, tempDate, tempAmount, tempCategory, tempContent] = 
   
   let selectMethod = ""; // 추가, 수정, 삭제를 분별하기 위한 장치
 
+  const getUid = async () => {
+    const value = await AsyncStorage.getItem("UID");
+    return value;
+  }
+  
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || tdate;
     setShowDatePicker(false);
@@ -43,6 +49,8 @@ function AccountForm() {
     }
     const fetchBankData = async () => {
       try {
+        const uid = await getUid();
+        setUID(uid);
         const results = await callFirestore.getDataAll({
           collection: 'cards',
         });
@@ -83,7 +91,7 @@ function AccountForm() {
       amount,
       category,
       content,
-      ID,
+      uid: UID,
       bank,
       account,
       realTime,
@@ -96,18 +104,18 @@ function AccountForm() {
           collection: 'moneyChange',  // 컬렉션 이름
           data: data,                 // 저장할 데이터
         });
-        callFirestore.updateCardbymoney({collectionName:'cards', ID:data.ID, bank:data.bank, account:data.account, amount:data.amount, type:data.type});
+        callFirestore.updateCardbymoney({collectionName:'cards', UID:data.uid, bank:data.bank, account:data.account, amount:data.amount, type:data.type});
          updateCardAmount(bank, account, type, amount);
       }
       else if(selectMethod === "Modify"){
         firestorePromise = callFirestore.updateDatabyDoc({
           collectionName: "moneyChange", // Firebase 컬렉션 이름
-          searchID: chosenID,
+          searchUID: UID,
           searchdate: item.date,
           searchcategory: item.category,
           searchamount: Number(item.amount),
           searchcontent: item.content,
-          ID: ID,
+          UID: UID,
           date: date,
           amount: amount,
           category: category,
@@ -118,24 +126,24 @@ function AccountForm() {
 
         callFirestore.updateCardbymoney({
            collectionName:'cards',
-           ID:data.ID, 
+           UID:data.uid, 
            bank:data.bank,
            account:data.account,
            amount:(tamount!==item.amount)?(tamount-item.amount):0,
            type:data.type});
-        data.ID="";
+        data.uid="";
       }
       else if(selectMethod === "Del"){
         firestorePromise = callFirestore.deleteDatabyDoc({
           collectionName: "moneyChange", // Firebase 컬렉션 이름
-          ID: ID,
+          UID: UID,
           date: date,
           amount: amount,
           category: category,
           content: content,
         });
-        callFirestore.updateCardbymoney({collectionName:'cards', ID:data.ID, bank:data.bank, account:data.account, amount:data.amount*(-1), type:data.type});
-        data.ID="";
+        callFirestore.updateCardbymoney({collectionName:'cards', UID:data.uid, bank:data.bank, account:data.account, amount:data.amount*(-1), type:data.type});
+        data.uid="";
       }
       // 저장 후 화면을 이전 페이지로 돌아가기
       //navigation.goBack();
@@ -154,9 +162,9 @@ function AccountForm() {
 
   const updateCardAmount = async (bank, account, type, amount) => {
     try {
-      const query = await callFirestore.getDataByID({
+      const query = await callFirestore.getDataByUID({
         collectionName: 'cards',
-        ID: `${bank}-${account}`
+        UID: `${bank}-${account}`
       });
 
       if (query && query.length > 0) {
@@ -169,7 +177,7 @@ function AccountForm() {
 
         await callFirestore.updateDatabyDoc({
           collectionName: 'cards',
-          ID: `${bank}-${account}`,
+          UID: `${bank}-${account}`,
           data: updatedData,
         });
       }

@@ -5,16 +5,24 @@ import MoneyChangeButton from '../native_components/MoneyChangeButton'; // 경�
 import PlusButton from '../native_components/PlusButton'; // 경로 추가
 import { format } from 'date-fns';
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+
 const MoneyChange = () => {
   const route = useRoute();
   const todayDate = format(new Date(), 'yyyy-MM-dd');// 오늘 날짜
-  const { selectedDate, newData } = route.params || {};// CustomCalendar에서 선택한 날짜를 전달
-  const selectedID = "Jeeny doe"; //로그인 된 UID 임시 하드코딩
+  const { selectedDate, newData} = route.params || {};// CustomCalendar에서 선택한 날짜를 전달
+  const [selectedID,setSelectedID] = useState(null); //로그인 된 UID 임시 하드코딩
   const [data_list, setDataList] = useState([]); //선택한 날짜를 기반으로 검색하여 지출,수익 내역 데이터를 저장
 
   const effectiveDate = selectedDate || todayDate;// 'selectedDate'가 없다면 오늘 날짜로 설정
 
-  const plusDummy = {ID:selectedID, date:effectiveDate, amount:'', catecory:'food',content:'',type:1,} //plus버튼을 눌렀을 시 넘길 임시데이터
+  const getUid = async () => {
+    const value = await AsyncStorage.getItem("UID");
+    return value;
+  }
+
+  const plusDummy = {UID:null, date:effectiveDate, amount:'', catecory:'food',content:'',type:1,} //plus버튼을 눌렀을 시 넘길 임시데이터
 
   useEffect(() => {
     if (newData) {
@@ -22,9 +30,12 @@ const MoneyChange = () => {
     }
     const fetchData = async () => {
       try {
+        const uid = await getUid();
+        plusDummy.UID=uid;
+
         const results = await callFirestore.getDataByDoc({
           collectionName: "moneyChange", // Firebase 컬렉션 이름
-          ID: selectedID, //조건1:UID
+          UID: uid, //조건1:UID
           date: effectiveDate, //조건2:선택된 날짜
         });
         setDataList(results); // data_list에 가져온 데이터 저장
@@ -36,7 +47,6 @@ const MoneyChange = () => {
 
     fetchData();
   }, [selectedDate,newData]);//수정, 추가, 삭제를 통해 변경된 값이 전달되면 적용
-
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -52,12 +62,12 @@ const MoneyChange = () => {
           return(
           <MoneyChangeButton key = {index} //해당 배열을 MoneyChangeButton 배열로 만듦  또한 클릭시 수정가능
            item = {item}
-           chosenID = {selectedID}
+           chosenID = {plusDummy.UID}
            />
           )
         })}
       </ScrollView>
-      <PlusButton selectedDate={selectedDate} chosenID = {selectedID} item = {plusDummy}/> 
+      <PlusButton selectedDate={selectedDate} chosenID = {plusDummy.UID} item = {plusDummy}/> 
       {/* PlusButton 추가, 선택된 날짜(selectedDate)를 전달함 */}
     </View>
   );

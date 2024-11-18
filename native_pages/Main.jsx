@@ -27,7 +27,8 @@ const Main = () => {
       const fetchData = async () => {
         try {
           // 모든 데이터 가져오기
-          const result = await callFirestore.getDataByID({ collectionName: "moneyChange", ID: "Jeeny doe" });
+          const uid = await getUid();
+          const result = await callFirestore.getDataByUID({ collectionName: "moneyChange", UID: uid });
           const formattedData = result.reduce((acc, item) => {
             const { date, amount, type } = item;
             const formattedDate = date;
@@ -44,10 +45,11 @@ const Main = () => {
       
             return acc;
           }, {});
+          
       
           // 월별 데이터 병렬로 가져오기
           const monthPromises = Array.from({ length: 12 }, (_, i) => {
-            return callFirestore.getDataByMonth({ collectionName: "moneyChange", ID: "Jeeny doe", year: todayDate.slice(0, 4), month: String(i + 1) });
+            return callFirestore.getDataByMonth({ collectionName: "moneyChange", UID: uid, year: todayDate.slice(0, 4), month: String(i + 1) });
           });
       
           const monthData = await Promise.all(monthPromises);

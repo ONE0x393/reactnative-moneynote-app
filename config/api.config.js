@@ -31,11 +31,11 @@ const getUserInfoByUID = async ({ UID }) => {
   }
 };
 
-const getDataByID = async ({ collectionName, ID}) => {
+const getDataByUID = async ({ collectionName, UID}) => {
   try {
     const q = query(
       collection(db, collectionName),
-      where("ID", "==", ID)//조건: UID
+      where("uid", "==", UID)//조건: UID
     );
 
     const querySnapshot = await getDocs(q); //조건으로 필터링된 데이터들
@@ -52,11 +52,11 @@ const getDataByID = async ({ collectionName, ID}) => {
   }
 };
 
-const getDataByDoc = async ({ collectionName, ID, date }) => {
+const getDataByDoc = async ({ collectionName, UID, date }) => {
   try {
     const q = query(
       collection(db, collectionName),
-      where("ID", "==", ID),
+      where("uid", "==", UID),
       where("date", "==", date)
     );
     const querySnapshot = await getDocs(q);
@@ -73,7 +73,7 @@ const getDataByDoc = async ({ collectionName, ID, date }) => {
   }
 };
 
-const getDataByMonth = async ({ collectionName, ID, year, month }) => { //특정 년도와 월을 입력해 해당 시간대의 데이터들을 리턴
+const getDataByMonth = async ({ collectionName, UID, year, month }) => { //특정 년도와 월을 입력해 해당 시간대의 데이터들을 리턴
   try {
      // 지정한 년도와 월을 사용하여 해당 월의 시작일과 종료일 Timestamp 생성
      const startDate = new Date(Number(year), Number(month) - 1, 1); // 해당 월의 1일
@@ -82,7 +82,7 @@ const getDataByMonth = async ({ collectionName, ID, year, month }) => { //특정
     // Firestore 쿼리: ID와 월(YYYY-MM)을 기준으로 데이터 필터링
     const q = query(
       collection(db, collectionName),
-      where("ID", "==", ID),
+      where("uid", "==", UID),
       where("realTime", ">=", Timestamp.fromDate(startDate)),  // 해당 월의 1일부터
       where("realTime", "<", Timestamp.fromDate(endDate))  // 해당 월의 다음달 1일 전까지
     );
@@ -148,11 +148,11 @@ const updateData = async o => {
   } catch (e) { console.error("Error updating document: ", e); }
 }
 
-const updateDatabyDoc = async ({collectionName,searchID, searchdate, searchcategory, searchamount, searchcontent, ID, date, category, amount, content}) => {
+const updateDatabyDoc = async ({collectionName,searchUID, searchdate, searchcategory, searchamount, searchcontent, UID, date, category, amount, content}) => {
   try {
     const q = query( //기존 데이터로 검색
       collection(db, collectionName),
-      where("ID","==",searchID),
+      where("uid","==",searchUID),
       where("date","==",searchdate),
       where("amount","==",searchamount),
       where("category","==",searchcategory),
@@ -164,7 +164,7 @@ const updateDatabyDoc = async ({collectionName,searchID, searchdate, searchcateg
       querySnapshot.forEach(async (docSnap)=>{
         const docRef = doc(db, collectionName, docSnap.id);
         const updateData = {
-          ID,
+          uid:UID,
           date,
           category,
           amount,
@@ -180,11 +180,11 @@ const updateDatabyDoc = async ({collectionName,searchID, searchdate, searchcateg
   } catch (e) { console.error("Error updating document: ", e); }
 }
 
-const updateCardbymoney = async ({collectionName, ID, bank, account, amount, type}) => {
+const updateCardbymoney = async ({collectionName, UID, bank, account, amount, type}) => {
   try {
     const q = query( //기존 데이터로 검색
       collection(db, collectionName),
-      where("ID","==",ID),
+      where("uid","==",UID),
       where("bank","==",bank),
       where("account","==",account),
     )
@@ -230,11 +230,12 @@ const deleteData = async o => {
   } catch (e) { console.error("Error deleting document: ", e); }
 }
 
-const deleteDatabyDoc = async ({collectionName, ID, date, category, amount, content}) => {
+const deleteDatabyDoc = async ({collectionName, UID, date, category, amount, content}) => {
   try {
+    //console.log(UID);
     const q = query(
       collection(db, collectionName),
-      where("ID","==",ID),
+      where("uid","==",UID),
       where("date","==",date),
       where("amount","==",amount),
       where("category","==",category),
@@ -255,7 +256,7 @@ const deleteDatabyDoc = async ({collectionName, ID, date, category, amount, cont
 
 global.callFirestore = {
   getDataAll,
-  getDataByID,
+  getDataByUID,
   getDataByDoc,
   getDataByMonth,
   getData,

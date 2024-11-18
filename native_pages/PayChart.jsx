@@ -3,6 +3,8 @@ import { View, StyleSheet, ScrollView, Text } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import CircleChart from '../native_components/CircleChart';
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const PayChart = () => {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [month] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
@@ -11,12 +13,18 @@ const PayChart = () => {
   const [incomeData, setIncomeData] = useState([]);
   const [outputData, setOutputData] = useState([]);
 
+  const getUid = async () => {
+    const value = await AsyncStorage.getItem("UID");
+    return value;
+  }
+
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const uid = await getUid();
         const results = await callFirestore.getDataByMonth({
           collectionName: 'moneyChange',
-          ID: 'Jeeny doe',
+          UID: uid,
           year: new Date().getFullYear(),
           month: selectedMonth,
         });

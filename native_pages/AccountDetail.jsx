@@ -12,13 +12,13 @@ function AccountDetail() {
   useEffect(() => {
     const fetchUserID = async () => {
       try {
-        const results = await callFirestore.getDataByID({
+        const results = await callFirestore.getDataByUID({
           collectionName: 'cards',
-          ID: `${accountData.bank}-${accountData.account}`
+          UID: `${accountData.bank}-${accountData.account}`
         });
 
         if (results && results.length > 0) {
-          setUserID(results[0].ID || '알 수 없는 사용자');
+          setUserID(results[0].uid || '알 수 없는 사용자');
         }
       } catch (error) {
         console.error('Error fetching user ID:', error);
