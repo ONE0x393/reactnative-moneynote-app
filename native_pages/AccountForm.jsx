@@ -29,11 +29,6 @@ function AccountForm() {
   //const [tempID, tempDate, tempAmount, tempCategory, tempContent] = 
   
   let selectMethod = ""; // 추가, 수정, 삭제를 분별하기 위한 장치
-
-  const getUid = async () => {
-    const value = await AsyncStorage.getItem("UID");
-    return value;
-  }
   
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || tdate;
@@ -49,7 +44,12 @@ function AccountForm() {
     }
     const fetchBankData = async () => {
       try {
-        const uid = await getUid();
+        const uid = await AsyncStorage.getItem("UID");
+        if (!uid) {
+          // UID가 없으면 로그인 페이지로 이동
+          navigation.navigate("Login");
+          return; // 더 이상 실행하지 않도록 return
+        }
         setUID(uid);
         const results = await callFirestore.getDataAll({
           collection: 'cards',

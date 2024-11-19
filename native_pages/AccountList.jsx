@@ -2,21 +2,27 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AccountPlusButton from '../native_components/AccountPlusButton';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 function AccountList() {
   const navigation = useNavigation();
   const [groupedAccounts, setGroupedAccounts] = useState({});
-  const selectedID = 'Jeeny doe'; // 로그인 된 UID 임시 하드코딩 (동적인 사용자 ID로 대체 필요)
 
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
         // callFirestore를 사용하여 데이터를 가져오기
-        const results = await callFirestore.getDataAll({
-          collection: 'cards',
+        const UID = await AsyncStorage.getItem("UID");
+        if (!UID) {
+          navigation.navigate("Login");
+          return; // 더 이상 실행하지 않도록 return
+        }
+        const results = await callFirestore.getDataByUID({
+          collectionName: 'cards',
+          UID:UID,
         });
-        const accountsData = results.data;
-        calculateBalanceByBankAndAccount(accountsData);
+        console.log(results);
+        calculateBalanceByBankAndAccount(results);
       } catch (error) {
         console.error('계좌 데이터를 가져오는 중 오류 발생: ', error);
       }

@@ -5,7 +5,7 @@ import EI_View from '../native_components/EI_View'; // 지출 및 수익 컴포�
 import MonthPayBar from '../native_components/MonthPayBar'; // 막대 그래프 컴포넌트
 import { collection } from 'firebase/firestore';
 import { format } from 'date-fns';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -16,18 +16,20 @@ const Main = () => {
   const [monthlyExpense,setMonthlyExpense] = useState(Array(12).fill(0)); 
   const [monthlyIncome,setMonthlyIncome] = useState(Array(12).fill(0)); 
   const [calendarData, setCalendarData] = useState([]);
-  
-  const getUid = async () => {
-    const value = await AsyncStorage.getItem("UID");
-    return value;
-  }
+
+  const navigation = useNavigation(); // 네비게이션 훅 사용
 
   useFocusEffect(
     useCallback(() => {
       const fetchData = async () => {
         try {
           // 모든 데이터 가져오기
-          const uid = await getUid();
+          const uid = await AsyncStorage.getItem("UID");
+          if (!uid) {
+            navigation.navigate("Login");
+            return; // 더 이상 실행하지 않도록 return
+          }
+
           const result = await callFirestore.getDataByUID({ collectionName: "moneyChange", UID: uid });
           const formattedData = result.reduce((acc, item) => {
             const { date, amount, type } = item;
@@ -42,7 +44,6 @@ const Main = () => {
             } else if (type === 1) {
               acc[formattedDate].income += amount;
             }
-      
             return acc;
           }, {});
           

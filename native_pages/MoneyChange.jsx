@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { useRoute } from '@react-navigation/native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import MoneyChangeButton from '../native_components/MoneyChangeButton'; // 경로 수정
 import PlusButton from '../native_components/PlusButton'; // 경로 추가
 import { format } from 'date-fns';
@@ -14,13 +14,9 @@ const MoneyChange = () => {
   const { selectedDate, newData} = route.params || {};// CustomCalendar에서 선택한 날짜를 전달
   const [selectedID,setSelectedID] = useState(null); //로그인 된 UID 임시 하드코딩
   const [data_list, setDataList] = useState([]); //선택한 날짜를 기반으로 검색하여 지출,수익 내역 데이터를 저장
+  const navigation = useNavigation();
 
   const effectiveDate = selectedDate || todayDate;// 'selectedDate'가 없다면 오늘 날짜로 설정
-
-  const getUid = async () => {
-    const value = await AsyncStorage.getItem("UID");
-    return value;
-  }
 
   const plusDummy = {UID:null, date:effectiveDate, amount:'', catecory:'food',content:'',type:1,} //plus버튼을 눌렀을 시 넘길 임시데이터
 
@@ -30,7 +26,11 @@ const MoneyChange = () => {
     }
     const fetchData = async () => {
       try {
-        const uid = await getUid();
+        const uid = await AsyncStorage.getItem("UID");
+        if (!uid) { //로그인이 되어 있지 않다면 Login 페이지로 이동
+          navigation.navigate("Login");
+          return;
+        }
         plusDummy.UID=uid;
 
         const results = await callFirestore.getDataByDoc({

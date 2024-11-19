@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ScrollView, Text } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import CircleChart from '../native_components/CircleChart';
+import { useNavigation } from '@react-navigation/native';
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -12,16 +13,16 @@ const PayChart = () => {
   const [category, setCategory] = useState([]);
   const [incomeData, setIncomeData] = useState([]);
   const [outputData, setOutputData] = useState([]);
-
-  const getUid = async () => {
-    const value = await AsyncStorage.getItem("UID");
-    return value;
-  }
+  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const uid = await getUid();
+        const uid = await AsyncStorage.getItem("UID");
+        if (!uid) { //로그인이 되어 있지 않다면 Login 페이지로 이동
+          navigation.navigate("Login");
+          return;
+        }
         const results = await callFirestore.getDataByMonth({
           collectionName: 'moneyChange',
           UID: uid,
