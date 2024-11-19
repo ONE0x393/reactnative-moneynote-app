@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // 페이지 이동을 위해 추가
 
-const PlusButton = () => {
+const AccountPlusButton = () => {
   const navigation = useNavigation(); // useNavigation 훅을 사용하여 네비게이션 객체를 가져옵니다
 
   const handlePress = () => {
@@ -35,4 +35,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PlusButton;
+export default AccountPlusButton;

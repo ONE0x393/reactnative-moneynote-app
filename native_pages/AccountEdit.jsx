@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 function AccountEdit() {
   const route = useRoute();
   const navigation = useNavigation();
@@ -14,6 +16,7 @@ function AccountEdit() {
   const [account, setAccount] = useState('');
   const [bank, setBank] = useState('');
   const [balance, setBalance] = useState(0); // 잔액 상태 추가
+  const [UID, setUID] = useState(chosenID);
 
 
   let selectMethod = "";
@@ -21,28 +24,29 @@ function AccountEdit() {
   // Firestore에서 데이터 가져오기
   useEffect(() => {
     const fetchAccountData = async () => {
-      if (accountId) {
-        try {
-          // Firestore에서 데이터를 가져오기 위해 callFirestore 사용
-          const results = await callFirestore.getDataByID({
-            collectionName: 'cards',
-            ID: accountId
-          });
-          
-          if (results && results.length > 0) {
-            const data = results[0];
-            setType(data.type === 1 ? 'income' : 'expense');
-          } else {
-            console.error(`No such document found in the accounts collection for accountId: ${accountId}`);
-          }
-        } catch (error) {
-          console.error('Error fetching document: ', error);
+      try {
+        // Firestore에서 데이터를 가져오기 위해 callFirestore 사용
+        const uid = await AsyncStorage.getItem("UID");
+        setUID(uid);
+
+        const results = await callFirestore.getDataByUID({
+          collectionName: 'cards',
+          UID: uid
+        });
+        
+        if (results && results.length > 0) {
+          const data = results[0];
+          setType(data.type === 1 ? 'income' : 'expense');
+        } else {
+          console.error(`No such document found in the accounts collection for UID: ${uid}`);
         }
+      } catch (error) {
+        console.error('Error fetching document: ', error);
       }
     };
 
     fetchAccountData();
-  }, [accountId]);
+  }, [UID]);
 
   const calculateBalance = async () => {
     try {
@@ -71,8 +75,9 @@ function AccountEdit() {
 
   const handleSubmit = async () => {
     const formattedType = type === 'income' ? 1 : 0;
+    //console.log(UID);
     const data = {
-      ID: accountId,
+      uid: UID,
       in_amount: formattedType === 1 ? Number(inAmount) : 0,
       ex_amount: formattedType === 0 ? Number(exAmount) : 0,
       account,
@@ -90,7 +95,7 @@ function AccountEdit() {
       else if (selectMethod === "Modify") {
         firestorePromise = callFirestore.updateDatabyDoc({
           collectionName: "cards",
-          ID: accountId,
+          UID: UID,
           account: account,
           in_amount: data.in_amount,
           ex_amount: data.ex_amount,
@@ -100,7 +105,7 @@ function AccountEdit() {
       else if (selectMethod === "Del") {
         firestorePromise = callFirestore.deleteDatabyDoc({
           collectionName: "cards",
-          ID: accountId,
+          UID: UID,
           account: account,
           in_amount: data.in_amount,
           ex_amount: data.ex_amount,

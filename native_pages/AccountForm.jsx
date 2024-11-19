@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -203,109 +203,114 @@ function AccountForm() {
   
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>가계부 작성</Text>
-      
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>유형</Text>
-        <Picker
-          selectedValue={ttype}
-          onValueChange={(itemValue) => setType(itemValue)}
-          style={styles.input}
-        >
-          <Picker.Item label="수입" value="income" />
-          <Picker.Item label="지출" value="expense" />
-        </Picker>
-      </View>
-
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>은행 및 계좌</Text>
-        <Picker
-          selectedValue={bankAccount}
-          onValueChange={(itemValue) => setBankAccount(itemValue)}
-          style={styles.input}
-        >
-          <Picker.Item label="-은행 계좌를 선택해주세요-" value="-은행 계좌를 선택해주세요-" />
-          {bankAccounts.map((bankAccountName) => (
-            <Picker.Item key={bankAccountName} label={bankAccountName} value={bankAccountName} />
-          ))}
-        </Picker>
-      </View>
-
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>날짜</Text>
-        <Button
-          title={tdate.toLocaleDateString()}
-          onPress={() => setShowDatePicker(true)}
-        />
-        {showDatePicker && (
-          <DateTimePicker
-            value={tdate}
-            mode="date"
-            display="default"
-            onChange={handleDateChange}
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <View style={styles.container}>
+        <Text style={styles.title}>가계부 작성</Text>
+        
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>유형</Text>
+          <Picker
+            selectedValue={ttype}
+            onValueChange={(itemValue) => setType(itemValue)}
+            style={styles.input}
+          >
+            <Picker.Item label="수입" value="income" />
+            <Picker.Item label="지출" value="expense" />
+          </Picker>
+        </View>
+  
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>은행 및 계좌</Text>
+          <Picker
+            selectedValue={bankAccount}
+            onValueChange={(itemValue) => setBankAccount(itemValue)}
+            style={styles.input}
+          >
+            <Picker.Item label="-은행 계좌를 선택해주세요-" value="-은행 계좌를 선택해주세요-" />
+            {bankAccounts.map((bankAccountName) => (
+              <Picker.Item key={bankAccountName} label={bankAccountName} value={bankAccountName} />
+            ))}
+          </Picker>
+        </View>
+  
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>날짜</Text>
+          <Button
+            title={tdate.toLocaleDateString()}
+            onPress={() => setShowDatePicker(true)}
           />
+          {showDatePicker && (
+            <DateTimePicker
+              value={tdate}
+              mode="date"
+              display="default"
+              onChange={handleDateChange}
+            />
+          )}
+        </View>
+  
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>금액</Text>
+          <TextInput
+            style={styles.input}
+            keyboardType="numeric"
+            value={tamount}
+            onChangeText={setAmount}
+            placeholder="금액 입력"
+          />
+        </View>
+  
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>분류</Text>
+          <Picker
+            selectedValue={category}
+            onValueChange={(itemValue) => setCategory(itemValue)}
+            style={styles.input}
+          >
+            <Picker.Item label="식비" value="food" />
+            <Picker.Item label="교통비" value="transportation" />
+            <Picker.Item label="취미" value="hobby" />
+            <Picker.Item label="기타" value="others" />
+          </Picker>
+        </View>
+  
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>내용</Text>
+          <TextInput
+            style={styles.input}
+            value={content}
+            onChangeText={setContent}
+            placeholder="내용 입력"
+          />
+        </View>
+  
+        {del_positive !== 1 && (
+          <View style={styles.formGroup}>
+            <Button title="저장" onPress={handleAdd} />
+          </View>
+        )}
+  
+        {del_positive === 1 && (
+          <View style={styles.formGroup}>
+            <Button title="수정" onPress={handleModify} />
+          </View>
+        )}
+  
+        {del_positive === 1 && (
+          <View style={styles.formGroup}>
+            <Button title="삭제" onPress={handleDel} />
+          </View>
         )}
       </View>
-
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>금액</Text>
-        <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          value={tamount}
-          onChangeText={setAmount}
-          placeholder="금액 입력"
-        />
-      </View>
-
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>분류</Text>
-        <Picker
-          selectedValue={category}
-          onValueChange={(itemValue) => setCategory(itemValue)}
-          style={styles.input}
-        >
-          <Picker.Item label="식비" value="food" />
-          <Picker.Item label="교통비" value="transportation" />
-          <Picker.Item label="취미" value="hobby" />
-          <Picker.Item label="기타" value="others" />
-        </Picker>
-      </View>
-
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>내용</Text>
-        <TextInput
-          style={styles.input}
-          value={content}
-          onChangeText={setContent}
-          placeholder="내용 입력"
-        />
-      </View>
-
-      
-      {del_positive !== 1 && (
-        <View style={styles.formGroup}>
-          <Button title="저장" onPress={handleAdd} />
-        </View>
-      )}
-
-      {del_positive === 1 && (
-        <View style={styles.formGroup}>
-          <Button title="수정" onPress={handleModify} />
-        </View>
-      )}
-
-      {del_positive === 1 && (
-        <View style={styles.formGroup}>
-          <Button title="삭제" onPress={handleDel} />
-        </View>
-      )}
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,
+    padding: 10, // 원하는 padding 값 추가
+  },
   container: {
     flex: 1,
     padding: 20,

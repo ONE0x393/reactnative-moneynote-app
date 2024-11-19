@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import CustomCalendar from '../native_components/CustomCalendar'; // 달력 컴포넌트
 import EI_View from '../native_components/EI_View'; // 지출 및 수익 컴포넌트
 import MonthPayBar from '../native_components/MonthPayBar'; // 막대 그래프 컴포넌트
@@ -75,27 +75,22 @@ const Main = () => {
   );
 
   return (
-    <SafeAreaView style={styles.safeAreaContainer}>
-      <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
 
-        <EI_View expenses={monthlyExpense[Number(todayDate.slice(5, 7)) - 1]} income={monthlyIncome[Number(todayDate.slice(5, 7)) - 1]} />
-        {/* expenses에 지출, income에 수익을 넣어 상단에 표시 */}
-        {/* 달력 컴포넌트 */}
-        <CustomCalendar calendarData={calendarData} />
-        {/* 특정날짜의 총지출,수익 금액에 대한 정보인 calendarData를 전달하여 출력 */}
-        {/* 12개월 막대 그래프 컴포넌트 */}
-        <MonthPayBar monthlyExpense={monthlyExpense} monthlyIncome={monthlyIncome} />
+      <EI_View expenses={monthlyExpense[Number(todayDate.slice(5, 7)) - 1]} income={monthlyIncome[Number(todayDate.slice(5, 7)) - 1]} />
+      {/* expenses에 지출, income에 수익을 넣어 상단에 표시 */}
+      {/* 달력 컴포넌트 */}
+      <CustomCalendar calendarData={calendarData} />
+      {/* 특정날짜의 총지출,수익 금액에 대한 정보인 calendarData를 전달하여 출력 */}
+      {/* 12개월 막대 그래프 컴포넌트 */}
+      <MonthPayBar monthlyExpense={monthlyExpense} monthlyIncome={monthlyIncome} />
 
-      </ScrollView>
-    </SafeAreaView>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  safeAreaContainer: {
-    flex: 1,
-    backgroundColor: 'white', // SafeAreaView에 대한 배경색 지정 (필요시)
-  },
+  
   container: {
     
     backgroundColor: '#fff',

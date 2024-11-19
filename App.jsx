@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, SafeAreaView } from 'react-native'; // SafeAreaView 추가
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -33,7 +33,7 @@ function App() {
 
   return (
     <NavigationContainer>
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <View style={styles.pageContainer}>
           <Stack.Navigator
             screenOptions={{
@@ -41,7 +41,6 @@ function App() {
             }}
           >
             <Stack.Screen name="Main" component={Main} />
-            {/* 메인: 월 총지출-수익 표기, 일별 총지출-수익 표기  */}
             <Stack.Screen
               name="Login"
               component={LoginPage}
@@ -55,28 +54,23 @@ function App() {
                 },
               })}
             />
-            {/* 로그인 페이지  */}
             <Stack.Screen name="MoneyChange" component={MomneyChange} />
-            {/* 지출,수익 내역 리스트  */}
             <Stack.Screen name="AccountList" component={AccountList} />
-            {/* 계좌 및 금융수단 리스트  */}
             <Stack.Screen name="PayChart" component={PayChart} />
-            {/* 지출 카테고리 Pie그래프 분석  */}
             <Stack.Screen name="Terms" component={Terms} />
             <Stack.Screen name="Signup" component={Signup} />
             <Stack.Screen name="AccountForm" component={AccountForm} />
-            {/* 지출,수익 수정 및 등록 */}
             <Stack.Screen name="AccountEdit" component={AccountEdit} />
             <Stack.Screen name="AccountDetail" component={AccountDetail} />
-
-            {/* 마이페이지 */}
             <Stack.Screen name="MyPage" component={MyPage} />
           </Stack.Navigator>
         </View>
-        <View style={styles.menubarContainer}>
-          <MenuBar isLogin={isLogin} />
-        </View>
-      </View>
+        {isLogin && (
+          <View style={styles.menubarContainer}>
+            <MenuBar isLogin={isLogin} />
+          </View>
+        )}
+      </SafeAreaView>
     </NavigationContainer>
   );
 }

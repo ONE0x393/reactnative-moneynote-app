@@ -21,7 +21,6 @@ function AccountList() {
           collectionName: 'cards',
           UID:UID,
         });
-        console.log(results);
         calculateBalanceByBankAndAccount(results);
       } catch (error) {
         console.error('계좌 데이터를 가져오는 중 오류 발생: ', error);
