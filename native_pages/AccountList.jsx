@@ -47,6 +47,7 @@ function AccountList() {
           in_amount: 0,
           ex_amount: 0,
           balance: 0,
+          uid: account.uid,
           transactions: [],
         };
       }

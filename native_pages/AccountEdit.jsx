@@ -93,23 +93,21 @@ function AccountEdit() {
         });
       } 
       else if (selectMethod === "Modify") {
-        firestorePromise = callFirestore.updateDatabyDoc({
+        firestorePromise = callFirestore.updateCardbymoney({
           collectionName: "cards",
           UID: UID,
-          account: account,
-          in_amount: data.in_amount,
-          ex_amount: data.ex_amount,
           bank: bank,
+          account: account,
+          amount: formattedType === 1 ? Number(inAmount) : Number(exAmount),
+          type: formattedType,
         });
       } 
       else if (selectMethod === "Del") {
-        firestorePromise = callFirestore.deleteDatabyDoc({
+        firestorePromise = deleteCardbymoney({
           collectionName: "cards",
           UID: UID,
-          account: account,
-          in_amount: data.in_amount,
-          ex_amount: data.ex_amount,
           bank: bank,
+          account: account,
         });
       }
   

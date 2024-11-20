@@ -52,6 +52,26 @@ const getDataByUID = async ({ collectionName, UID}) => {
   }
 };
 
+const getUserNameByUID = async (uid) => {
+  try {
+    const q = query(
+      collection(db, 'users'),  // users 컬렉션에서
+      where('uid', '==', uid)   // uid가 일치하는 문서를 조회합니다.
+    );
+
+    const querySnapshot = await getDocs(q); // 조건으로 필터링된 데이터들
+    if (!querySnapshot.empty) {
+      return querySnapshot.docs[0].data().name; // 첫 번째 문서의 이름을 반환
+    } else {
+      console.error('해당 UID로 사용자 정보를 찾을 수 없습니다.');
+      return '알 수 없는 사용자';
+    }
+  } catch (error) {
+    console.error('사용자 이름 조회 중 오류 발생:', error);
+    return '오류 발생';
+  }
+};
+
 const getDataByDoc = async ({ collectionName, UID, date }) => {
   try {
     const q = query(
@@ -254,9 +274,32 @@ const deleteDatabyDoc = async ({collectionName, UID, date, category, amount, con
   } catch (e) { console.error("Error deleting document: ", e); }
 }
 
+const deleteCardbymoney = async ({ collectionName, UID, bank, account }) => {
+  try {
+    const q = query( // 기존 데이터로 검색
+      collection(db, collectionName),
+      where("uid", "==", UID),
+      where("bank", "==", bank),
+      where("account", "==", account),
+    );
+    
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) { // 문서 삭제
+      querySnapshot.forEach(async (docSnap) => {
+        const docRef = doc(db, collectionName, docSnap.id);
+        await deleteDoc(docRef);
+        console.log("Document successfully deleted!");
+      });
+    } else if (querySnapshot.empty) {
+      console.log('No matching documents found.');
+    }
+  } catch (e) { console.error("Error deleting document: ", e); }
+};
+
 global.callFirestore = {
   getDataAll,
   getDataByUID,
+  getUserNameByUID,
   getDataByDoc,
   getDataByMonth,
   getData,
@@ -271,4 +314,5 @@ global.callFirestore = {
 
   deleteData,
   deleteDatabyDoc,
+  deleteCardbymoney,
 };
