@@ -63,35 +63,60 @@ const PayChart = () => {
   }, [selectedMonth]);
 
   return (
-    <View style={styles.page}>
-      <View style={styles.selectorContainer}>
-        <Picker
-          selectedValue={selectedMonth}
-          onValueChange={(itemValue) => setSelectedMonth(itemValue)}
-          style={styles.picker}
-          itemStyle={styles.pickerItem}
-          mode="dropdown"
-        >
-          {month.map((m) => (
-            <Picker.Item key={m} label={`${m}월`} value={m} />
-          ))}
-        </Picker>
+    <View>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>지출-수익 분류</Text>
       </View>
-      <ScrollView contentContainerStyle={styles.page}>
-        {category.length === 0 ? (
-          <Text style={styles.noDataText}>데이터가 없습니다.</Text>
-        ) : (
-          <>
-            <CircleChart month={selectedMonth} in_output={in_output[0]} category={category} volume={outputData} />
-            <CircleChart month={selectedMonth} in_output={in_output[1]} category={category} volume={incomeData} />
-          </>
-        )}
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.page}>
+          <View style={styles.selectorContainer}>
+            <Picker
+              selectedValue={selectedMonth}
+              onValueChange={(itemValue) => setSelectedMonth(itemValue)}
+              style={styles.picker}
+              itemStyle={styles.pickerItem}
+              mode="dropdown"
+            >
+              {month.map((m) => (
+                <Picker.Item key={m} label={`${m}월`} value={m} />
+              ))}
+            </Picker>
+          </View>
+          <ScrollView contentContainerStyle={styles.page}>
+            {category.length === 0 ? (
+              <Text style={styles.noDataText}>데이터가 없습니다.</Text>
+            ) : (
+              <>
+                <CircleChart month={selectedMonth} in_output={in_output[0]} category={category} volume={outputData} />
+                <CircleChart month={selectedMonth} in_output={in_output[1]} category={category} volume={incomeData} />
+              </>
+            )}
+          </ScrollView>
+        </View>
       </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  header: {
+    height: 50,
+    justifyContent: 'center', // 텍스트가 세로로 가운데 정렬되도록 설정
+    alignItems: 'center', // 가로로 가운데 정렬
+    backgroundColor: '#f0f0f0', // 배경 색상
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd', // 하단 경계선 추가
+    paddingTop:20,
+  },
+  headerText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    padding: 10, // 원하는 padding 값 추가
+    backgroundColor:'#fff',
+  },
   page: {
     flex: 1,
     backgroundColor: '#fff',

@@ -81,20 +81,37 @@ function AccountList() {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={Object.keys(groupedAccounts)}
-        renderItem={renderBankGroup}
-        keyExtractor={(item) => item}
-      />
+      <View style={styles.header}>
+        <Text style={styles.headerText}>계좌 목록</Text>
+      </View>
+      <View style={{ padding: 20 }}>
+        <FlatList
+          data={Object.keys(groupedAccounts)}
+          renderItem={renderBankGroup}
+          keyExtractor={(item) => item}
+        />
+      </View>
       <AccountPlusButton onPress={() => navigation.navigate('AccountEdit')} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  header: {
+    height: 50,
+    justifyContent: 'center', // 텍스트가 세로로 가운데 정렬되도록 설정
+    alignItems: 'center', // 가로로 가운데 정렬
+    backgroundColor: '#f0f0f0', // 배경 색상
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd', // 하단 경계선 추가
+    paddingTop:20,
+  },
+  headerText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
   container: {
     flex: 1,
-    padding: 20,
     backgroundColor: '#f9f9f9',
   },
   bankGroup: {

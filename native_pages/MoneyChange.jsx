@@ -49,6 +49,9 @@ const MoneyChange = () => {
   }, [selectedDate,newData]);//수정, 추가, 삭제를 통해 변경된 값이 전달되면 적용
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>지출-수익 내역</Text>
+      </View>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {effectiveDate && (
           <View style={styles.dateContainer}>
@@ -74,6 +77,19 @@ const MoneyChange = () => {
 };
 
 const styles = StyleSheet.create({
+  header:{
+    height:50,
+    backgroundColor:'#f0f0f0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd', // 하단 경계선 추가
+    paddingTop:20,
+  },
+  headerText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
   container: {
     flex: 1, // 전체 공간을 차지하도록 설정
   },
@@ -83,7 +99,7 @@ const styles = StyleSheet.create({
   },
   dateContainer: {
     alignItems: 'center',
-    marginVertical: 20,
+    marginVertical: 5,
   },
   dateText: {
     fontSize: 24,
