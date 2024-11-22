@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { View, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import Svg, { Rect, Text, G } from 'react-native-svg';
+import { format } from 'date-fns';
 
 const MonthPayBar = ({ monthlyExpense, monthlyIncome }) => {
   const screenWidth = Dimensions.get('window').width;
@@ -13,12 +14,26 @@ const MonthPayBar = ({ monthlyExpense, monthlyIncome }) => {
   const scale = barMaxHeight / maxValue; // 데이터 값을 그래프 높이에 맞추는 스케일
   const paddingTop = 20; // 텍스트 표시를 위한 상단 여백
   const offset = barWidth / 2; // 왼쪽으로 조금 이동할 만큼 오프셋 추가
+  const scoroll_start_point = Number(format(new Date(), 'yyyy-MM-dd').slice(5,7));
+
+  const scrollViewRef = useRef(null);
+
+  useEffect(() => {
+    // 전체 크기 / 4를 계산하여 시작 지점 위치 설정
+    const startPosition = chartWidth *Math.floor((scoroll_start_point-1)/3)/4;
+    
+    // ScrollView가 렌더링 후 시작 위치로 스크롤 이동
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollTo({ x: startPosition, animated: false });
+    }
+  }, [scoroll_start_point, chartWidth]);
 
   return (
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={true}
       contentContainerStyle={styles.scrollContainer}
+      ref={scrollViewRef}
     >
       <Svg width={chartWidth} height={chartHeight + paddingTop + 40}>
         {/* 그래프 배경 색 추가 */}
@@ -35,8 +50,8 @@ const MonthPayBar = ({ monthlyExpense, monthlyIncome }) => {
           const expense = exp || 0; // 지출 값이 없으면 0으로 대체
           const income = monthlyIncome[index] || 0; // 수입 값이 없으면 0으로 대체
           const x = index * (barWidth * 3) + offset; // 각 막대의 X 좌표에 오프셋 추가
-          const expenseHeight = expense * scale; // 지출 막대의 높이
-          const incomeHeight = income * scale; // 수입 막대의 높이
+          const expenseHeight = (expense===0)?5:expense * scale; // 지출 막대의 높이
+          const incomeHeight = income===0?5:income * scale; // 수입 막대의 높이
 
           // 텍스트의 중간 부분을 맞추기 위한 X 좌표 계산
           const labelX = x + barWidth; // 라벨 중앙 부분의 X 좌표는 막대 중간
