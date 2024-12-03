@@ -39,7 +39,7 @@ function LoginPage({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.appName}>앱 이름</Text>
+      <Text style={styles.appName}>로그인</Text>
 
       <View style={styles.formGroup}>
         <Text style={styles.label}>Email</Text>
