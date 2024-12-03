@@ -21,7 +21,6 @@ const MyPage = () => {
       setUserName(userInfo.name);
       setUserEmail(userInfo.email);
 
-      console.log(userInfo);
     }
 
     fetchData();
